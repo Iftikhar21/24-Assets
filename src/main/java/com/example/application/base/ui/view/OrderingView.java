@@ -36,15 +36,13 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 @StyleSheet("https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Poppins:wght@400;500;600;700&display=swap")
 
 @Route("ordering")
-public final class MainView extends Div {
+public final class OrderingView extends Div {
 
     private Component desktopLayout;
     private Component mobileLayout;
@@ -148,7 +146,7 @@ public final class MainView extends Div {
     }
 
 
-    public MainView() {
+    public OrderingView() {
         addClassName("main-view");
         Image logo24Assets = new Image(DownloadHandler.forClassResource(getClass(),"/images/logo24Assets.png"), "Logo 24 Assets");
         logo24Assets.setWidth("auto");
@@ -925,6 +923,6 @@ public final class MainView extends Div {
     }
 
     public static void showMainView() {
-        UI.getCurrent().navigate(MainView.class);
+        UI.getCurrent().navigate(OrderingView.class);
     }
 }

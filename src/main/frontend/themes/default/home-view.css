@@ -13,6 +13,8 @@ html, body, .home-view, .home-view * {
     font-family: 'Poppins' !important;
     background: #fff;
     padding: 15px 100px !important;
+    position: fixed;
+    z-index: 50;
 }
 
 .navigation{

@@ -77,10 +77,21 @@ public class HomeView extends VerticalLayout {
 
         Button homeBtn = new Button("Home");
         homeBtn.addClassName("navigation-btn");
+        homeBtn.addClickListener(e -> {
+            UI.getCurrent().getPage().executeJs("document.getElementById('hero-section').scrollIntoView({behavior: 'smooth'})");
+        });
+
         Button aboutBtn = new Button("About Us");
         aboutBtn.addClassName("navigation-btn");
+        aboutBtn.addClickListener(e -> {
+            UI.getCurrent().getPage().executeJs("document.getElementById('about-us-section').scrollIntoView({behavior: 'smooth'})");
+        });
+
         Button blogBtn = new Button("Blog");
         blogBtn.addClassName("navigation-btn");
+        blogBtn.addClickListener(e -> {
+            UI.getCurrent().getPage().executeJs("document.getElementById('blog-section').scrollIntoView({behavior: 'smooth'})");
+        });
 
         nav.add(homeBtn, aboutBtn, blogBtn);
 
@@ -111,6 +122,7 @@ public class HomeView extends VerticalLayout {
         hero.setAlignItems(Alignment.CENTER);
         hero.setJustifyContentMode(JustifyContentMode.CENTER);
         hero.addClassName("hero-section");
+        hero.setId("hero-section");
 
         // Main heading
         Html title = new Html("<h1 class='main-title'>The Easiest Way to Get<br>What You Need – Fast!</h1>");
@@ -150,6 +162,7 @@ public class HomeView extends VerticalLayout {
         aboutUsSection.setPadding(false);
         aboutUsSection.setSpacing(false);
         aboutUsSection.addClassName("about-us-section");
+        aboutUsSection.setId("about-us-section");
 
         // Container utama dengan dua kolom
         HorizontalLayout twoColumnLayout = new HorizontalLayout();
@@ -205,6 +218,8 @@ public class HomeView extends VerticalLayout {
         // Main container
         VerticalLayout blogSection = new VerticalLayout();
         blogSection.setWidthFull();
+        blogSection.addClassName("blog-section");
+        blogSection.setId("blog-section");
 
         // Upper frame with blue background
         VerticalLayout frameUp = new VerticalLayout();

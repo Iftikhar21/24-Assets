@@ -53,6 +53,34 @@ public class ProductsController {
         return listProducts;
     }
 
+    public Products getProductByID(int productID) {
+        Products product = null;
+        try {
+            ps = conn.prepareStatement(
+                    "SELECT p.id_product, p.product_name, p.stock, p.id_category, c.category_name " +
+                            "FROM products p " +
+                            "JOIN category c ON p.id_category = c.id_category " +
+                            "WHERE p.id_product = ?",
+                    ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE
+            );
+            ps.setInt(1, productID);
+            rs = ps.executeQuery();
+            rs.beforeFirst();
+
+            if (rs.next()) {
+                product = new Products();
+                product.setProductID(rs.getInt("id_product"));
+                product.setCategoryID(rs.getInt("id_category"));
+                product.setProductName(rs.getString("product_name"));
+                product.setStock(rs.getInt("stock"));
+                product.setCategoryName(rs.getString("category_name"));
+            }
+        } catch (SQLException e) {
+            System.out.println("Error : " + e);
+        }
+        return product;
+    }
+
     public static void main(String[] args) {
         ProductsController controller = new ProductsController();
 

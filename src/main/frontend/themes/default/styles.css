@@ -78,6 +78,18 @@
     gap: 0.5rem;
 }
 
+.pin-child {
+    width: 4.5em;
+    height: 4.5em;
+}
+
+@media (max-width: 600px) {
+    .pin-child {
+        width: 3em;
+        height: 3em;
+    }
+}
+
 @media (min-width: 600px) {
     .search-filter-container {
         flex-direction: row;

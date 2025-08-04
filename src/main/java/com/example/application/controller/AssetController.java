@@ -35,6 +35,8 @@ public class AssetController {
 
                 Products product = new Products();
                 product.setProductID(rs.getInt("id_product"));
+                ProductsController productController = new ProductsController();
+                product = productController.getProductByID(product.getProductID());
                 asset.setProducts(new Products[] { product });
 
                 Location location = new Location();
@@ -47,6 +49,7 @@ public class AssetController {
                 asset.setNote(rs.getString("note"));
                 asset.setRole(rs.getString("role_peminjam"));
                 asset.setName(rs.getString("nama_peminjam"));
+                asset.setStatus(rs.getString("status"));
                 asset.setClassName(rs.getString("kelas"));
                 asset.setQuantity(rs.getInt("qty"));
                 listAsset.add(asset);

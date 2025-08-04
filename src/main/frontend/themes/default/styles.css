@@ -1,4 +1,7 @@
-@import url("dev-login.css");
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Poppins:wght@400;500;600;700&display=swap');
+html, body, .home-view, .home-view * {
+    font-family: 'Poppins', sans-serif !important;
+}
 
 .custom-textfield::part(input-field) {
     background-color: #ffffff;

@@ -6,6 +6,7 @@ import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.dependency.StyleSheet;
+import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.html.*;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
@@ -98,6 +99,13 @@ public class HomeView extends VerticalLayout {
         // Tombol Service dan Get Started di kanan
         Button serviceBtn = new Button("Service");
         serviceBtn.addClassName("navigation-btn");
+
+        Dialog serviceDialog = createServiceDialog();
+
+        // Tambahkan click listener untuk membuka dialog
+        serviceBtn.addClickListener(e -> {
+            serviceDialog.open();
+        });
 
         Button getStartedBtn = new Button("Get Started");
         getStartedBtn.addClickListener(e -> {
@@ -286,4 +294,124 @@ public class HomeView extends VerticalLayout {
         blogSection.add(frameUp, lowerSection);
         return blogSection;
     }
+
+    private Dialog createServiceDialog() {
+        Dialog dialog = new Dialog();
+        dialog.setCloseOnEsc(true);
+        dialog.setCloseOnOutsideClick(true);
+
+        // Set ukuran dialog
+        dialog.setWidth("400px");
+        dialog.setHeight("auto");
+
+        // Layout utama
+        VerticalLayout dialogLayout = new VerticalLayout();
+        dialogLayout.setPadding(false);
+        dialogLayout.setSpacing(false);
+        dialogLayout.setAlignItems(Alignment.CENTER);
+        dialogLayout.getStyle()
+                .set("padding", "30px")
+                .set("background", "white")
+                .set("border-radius", "12px");
+
+        // Tombol close (X) di pojok kanan atas
+        Button closeTopButton = new Button();
+        closeTopButton.setIcon(VaadinIcon.CLOSE.create());
+        closeTopButton.addThemeVariants(ButtonVariant.LUMO_TERTIARY_INLINE);
+        closeTopButton.getStyle()
+                .set("position", "absolute")
+                .set("top", "15px")
+                .set("right", "15px")
+                .set("color", "#666")
+                .set("background", "transparent")
+                .set("border", "none")
+                .set("cursor", "pointer");
+        closeTopButton.addClickListener(e -> dialog.close());
+
+        // Icon headset
+        Icon headsetIcon = VaadinIcon.HEADSET.create();
+        headsetIcon.setSize("48px");
+        headsetIcon.getStyle()
+                .set("color", "#333")
+                .set("margin-bottom", "20px");
+
+        // Title
+        H2 title = new H2("Butuh Bantuan? Hubungi Admin Layanan");
+        title.getStyle()
+                .set("text-align", "center")
+                .set("font-size", "22px")
+                .set("font-weight", "600")
+                .set("color", "#333")
+                .set("margin", "0 0 20px 0")
+                .set("line-height", "1.3");
+
+        // Description
+        Paragraph description = new Paragraph("Jika Anda mengalami kendala atau memiliki pertanyaan " +
+                "seputar peminjaman barang, silakan hubungi admin melalui " +
+                "telepon atau email yang tersedia.");
+        description.getStyle()
+                .set("text-align", "center")
+                .set("color", "#666")
+                .set("font-size", "14px")
+                .set("line-height", "1.5")
+                .set("margin", "0 0 30px 0")
+                .set("max-width", "320px");
+
+        // Contact info container
+        VerticalLayout contactLayout = new VerticalLayout();
+        contactLayout.setPadding(false);
+        contactLayout.setSpacing(false);
+        contactLayout.setAlignItems(Alignment.CENTER);
+        contactLayout.getStyle().set("margin-bottom", "30px");
+
+        // Phone number
+        Paragraph phone = new Paragraph("(+62) 88972349293847");
+        phone.getStyle()
+                .set("font-weight", "500")
+                .set("text-align", "center")
+                .set("color", "#007bff")
+                .set("font-size", "16px")
+                .set("margin", "0 0 8px 0")
+                .set("cursor", "pointer");
+
+        // Email
+        Paragraph email = new Paragraph("24assets@gmail.com");
+        email.getStyle()
+                .set("font-weight", "500")
+                .set("text-align", "center")
+                .set("color", "#007bff")
+                .set("font-size", "16px")
+                .set("margin", "0")
+                .set("cursor", "pointer");
+
+        contactLayout.add(phone, email);
+
+        // Close button
+        Button closeButton = new Button("Tutup", e -> dialog.close());
+        closeButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+        closeButton.getStyle()
+                .set("background", "#007bff")
+                .set("color", "white")
+                .set("border", "none")
+                .set("padding", "12px 30px")
+                .set("border-radius", "6px")
+                .set("font-weight", "500")
+                .set("cursor", "pointer");
+
+        // Tambahkan semua komponen ke layout
+        dialogLayout.add(headsetIcon, title, description, contactLayout, closeButton);
+
+        // Container untuk positioning tombol close
+        Div container = new Div();
+        container.getStyle().set("position", "relative");
+        container.add(closeTopButton, dialogLayout);
+
+        dialog.add(container);
+
+        // Styling untuk dialog overlay
+        dialog.getElement().getStyle()
+                .set("--lumo-border-radius", "12px");
+
+        return dialog;
+    }   
 }

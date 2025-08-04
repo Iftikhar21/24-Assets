@@ -44,6 +44,7 @@ html, body, .home-view, .home-view * {
     padding:25px 25px !important;
     font-weight: 400!important;
     font-size: 1.1rem;
+    color: #fff;
     box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3) !important;
     transition: all 0.3s ease !important;
 }

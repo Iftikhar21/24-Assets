@@ -2,9 +2,11 @@ package com.example.application.base.ui.view;
 
 import com.example.application.base.ui.component.ViewToolbar;
 import com.example.application.controller.AssetController;
+import com.example.application.controller.CategoryController;
 import com.example.application.controller.LocationController;
 import com.example.application.controller.ProductsController;
 import com.example.application.model.Asset;
+import com.example.application.model.Category;
 import com.example.application.model.Location;
 import com.example.application.model.Products;
 import com.vaadin.flow.component.Component;
@@ -53,6 +55,7 @@ public final class OrderingView extends Div {
     private ProductsController productsController = new ProductsController();
     private LocationController locationController = new LocationController();
     private AssetController assetController = new AssetController();
+    private CategoryController categoryController = new CategoryController();
 
     private TextField nameField;
     private ComboBox<String> statusCombo;
@@ -71,6 +74,7 @@ public final class OrderingView extends Div {
     private Dialog helpDialog;
     private VerticalLayout contentArea;
 
+    private List<Products> allProducts = new ArrayList<>();
 
     // SelectedProduct data class
     public static class SelectedProduct {
@@ -134,6 +138,8 @@ public final class OrderingView extends Div {
         buildLayoutBasedOnDevice(layout -> {
             add(layout);
         });
+
+        allProducts = productsController.getListProducts("");
 
     }
 
@@ -705,23 +711,19 @@ public final class OrderingView extends Div {
                 .set("gap", "8px")
                 .set("padding-top", "10px");
 
-        Image logoAll = new Image(DownloadHandler.forClassResource(getClass(),"/images/catAll.png"), "Logo All");
-        Image logoSoundSys = new Image(DownloadHandler.forClassResource(getClass(),"/images/catSoundSystem.png"), "Logo Sound System");
-        Image logoElectronics = new Image(DownloadHandler.forClassResource(getClass(),"/images/catElectronic.png"), "Logo Electronic");
-        Image logoRoomKeys = new Image(DownloadHandler.forClassResource(getClass(),"/images/catRoomNames.png"), "Logo Room Keys");
-        Image logoProjector = new Image(DownloadHandler.forClassResource(getClass(),"/images/catProjector.png"), "Logo Projector");
+        Button allBtn = createCategoryButton("All", true);
+        List<Category> listCategory = categoryController.getListCategory();
 
-        Button allBtn = createCategoryButton(logoAll, "All", true);
-        Button soundBtn = createCategoryButton(logoSoundSys, "Sound System", false);
-        Button electronicBtn = createCategoryButton(logoElectronics, "Electronic", false);
-        Button keysBtn = createCategoryButton(logoRoomKeys, "Room keys", false);
-        Button projectorBtn = createCategoryButton(logoProjector, "Projector", false);
+        filters.add(allBtn);
+        listCategory.forEach(category -> {
+            Button categoryBtn = createCategoryButton(category.getCategoryName(), false);
+            filters.add(categoryBtn);
+        });
 
-        filters.add(allBtn, soundBtn, electronicBtn, keysBtn, projectorBtn);
         return filters;
     }
 
-    private Button createCategoryButton(Image icon, String text, boolean active) {
+    private Button createCategoryButton(String text, boolean active) {
         Button btn = new Button();
         btn.setWidth("auto"); // Let buttons size based on content
         btn.getStyle()
@@ -732,13 +734,12 @@ public final class OrderingView extends Div {
         content.setSpacing(true);
         content.setPadding(false);
 
-        Span iconSpan = new Span(icon);
         Span textSpan = new Span(text);
         textSpan.getStyle()
                 .set("font-size", "12px")
                 .set("white-space", "nowrap"); // Prevent text wrapping
 
-        content.add(iconSpan, textSpan);
+        content.add(textSpan);
         btn.getElement().appendChild(content.getElement());
 
         btn.getStyle()
@@ -771,8 +772,6 @@ public final class OrderingView extends Div {
                 .set("overflow-y", "auto")  // Enable vertical scrolling
                 .set("max-height", "575px") // Set max height for scrollable area
                 .set("margin-bottom", "16px");
-
-        List<Products> allProducts = productsController.getListProducts("");
 
         // Group products by category
         Map<String, List<Products>> productsByCategory = allProducts.stream()

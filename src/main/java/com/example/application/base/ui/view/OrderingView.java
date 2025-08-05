@@ -1,6 +1,7 @@
 package com.example.application.base.ui.view;
 
 import com.example.application.base.ui.component.ViewToolbar;
+import com.example.application.base.ui.component.PinCodeField;
 import com.example.application.controller.AssetController;
 import com.example.application.controller.LocationController;
 import com.example.application.controller.ProductsController;
@@ -23,6 +24,7 @@ import com.vaadin.flow.component.grid.GridVariant;
 import com.vaadin.flow.component.html.*;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
+import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -31,6 +33,7 @@ import com.vaadin.flow.component.tabs.Tabs;
 import com.vaadin.flow.component.textfield.IntegerField;
 import com.vaadin.flow.component.textfield.TextArea;
 import com.vaadin.flow.component.textfield.TextField;
+import com.vaadin.flow.dom.Element;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.streams.DownloadHandler;
 
@@ -145,6 +148,60 @@ public final class OrderingView extends Div {
         });
     }
 
+    private HorizontalLayout createNavbar() {
+        HorizontalLayout navbar = new HorizontalLayout();
+        navbar.setWidthFull();
+        navbar.getStyle()
+                .set("background-color", "white")
+                .set("padding", "16px")
+                .set("box-shadow", "0 2px 4px rgba(0,0,0,0.1)")
+                .set("align-items", "center");
+
+        // Navbar title section
+        HorizontalLayout leftSection = new HorizontalLayout();
+        leftSection.setAlignItems(FlexComponent.Alignment.CENTER);
+        leftSection.setSpacing(true);
+
+        // Menu toggle button
+        Button menuButton = new Button(new Icon(VaadinIcon.MENU));
+        menuButton.getStyle().set("color", "#333");
+        menuButton.addClickListener(e -> {
+            sidebar.setVisible(!sidebar.isVisible());
+            if (contentArea != null) {
+                contentArea.getStyle().set("margin-left", sidebar.isVisible() ? "250px" : "0");
+            }
+        });
+
+        // Title with number "24"
+        Image logo24Assets = new Image(DownloadHandler.forClassResource(getClass(),"/images/logo24Assets.png"), "Logo 24 Assets");
+        logo24Assets.getStyle()
+                .set("align-items", "center")
+                .set("height", "24px");
+        Div title = new Div();
+        title.getStyle()
+                .set("align-items", "center");
+        title.add(logo24Assets);
+
+        leftSection.add(menuButton, title);
+
+        // Spacer
+        Div spacer = new Div();
+        spacer.setWidthFull();
+
+        HorizontalLayout rightSection = new HorizontalLayout();
+        Button serviceButton = new Button(new Icon(VaadinIcon.HEADSET));
+        serviceButton.getStyle().set("color", "#333");
+        createHelpDialog();
+        serviceButton.addClickListener(e -> helpDialog.open());
+
+        rightSection.add(serviceButton);
+
+        navbar.add(leftSection, spacer, rightSection);
+        navbar.setFlexGrow(1, spacer);
+
+        return navbar;
+    }
+
     private Component createDesktopLayout() {
         // Main container
         HorizontalLayout mainContainer = new HorizontalLayout();
@@ -168,7 +225,7 @@ public final class OrderingView extends Div {
         contentArea.setPadding(false);
         contentArea.setSpacing(false);
         contentArea.getStyle()
-                .set("margin-left", "300px") // Sesuaikan dengan lebar sidebar
+                .set("margin-left", "250px") // Sesuaikan dengan lebar sidebar
                 .set("overflow", "hidden");
 
         // Create navbar
@@ -212,63 +269,9 @@ public final class OrderingView extends Div {
         return mainContainer;
     }
 
-    private HorizontalLayout createNavbar() {
-        HorizontalLayout navbar = new HorizontalLayout();
-        navbar.setWidthFull();
-        navbar.getStyle()
-                .set("background-color", "white")
-                .set("padding", "16px")
-                .set("box-shadow", "0 2px 4px rgba(0,0,0,0.1)")
-                .set("align-items", "center");
-
-        // Navbar title section
-        HorizontalLayout leftSection = new HorizontalLayout();
-        leftSection.setAlignItems(FlexComponent.Alignment.CENTER);
-        leftSection.setSpacing(true);
-
-        // Menu toggle button
-        Button menuButton = new Button(new Icon(VaadinIcon.MENU));
-        menuButton.getStyle().set("color", "#333");
-        menuButton.addClickListener(e -> {
-            sidebar.setVisible(!sidebar.isVisible());
-            if (contentArea != null) {
-                contentArea.getStyle().set("margin-left", sidebar.isVisible() ? "300px" : "0");
-            }
-        });
-
-        // Title with number "24"
-        Image logo24Assets = new Image(DownloadHandler.forClassResource(getClass(),"/images/logo24Assets.png"), "Logo 24 Assets");
-        logo24Assets.getStyle()
-                .set("align-items", "center")
-                .set("height", "24px");
-        Div title = new Div();
-        title.getStyle()
-                .set("align-items", "center");
-        title.add(logo24Assets);
-
-        leftSection.add(menuButton, title);
-
-        // Spacer
-        Div spacer = new Div();
-        spacer.setWidthFull();
-
-        HorizontalLayout rightSection = new HorizontalLayout();
-        Button serviceButton = new Button(new Icon(VaadinIcon.HEADSET));
-        serviceButton.getStyle().set("color", "#333");
-        createHelpDialog();
-        serviceButton.addClickListener(e -> helpDialog.open());
-
-        rightSection.add(serviceButton);
-
-        navbar.add(leftSection, spacer, rightSection);
-        navbar.setFlexGrow(1, spacer);
-
-        return navbar;
-    }
-
     private VerticalLayout createSidebar() {
         sidebar = new VerticalLayout();
-        sidebar.setWidth("300px");
+        sidebar.setWidth("250px");
         sidebar.setHeight("100vh");
         sidebar.setPadding(false);
         sidebar.setSpacing(false);
@@ -405,7 +408,7 @@ public final class OrderingView extends Div {
         classCombo = new ComboBox<>();
         classCombo.addClassName("custom-textfield");
         classCombo.setItems("Electronics", "Furniture", "Vehicles");
-        classCombo.setPlaceholder("Class");
+        classCombo.setPlaceholder("Major");
         classCombo.setWidth("120px");
 
         locationCombo = new ComboBox<>();
@@ -429,12 +432,13 @@ public final class OrderingView extends Div {
         dateTimeRow.setAlignItems(FlexComponent.Alignment.END);
         dateTimeRow.getStyle().set("margin-bottom", "16px");
 
-        // Start date picker
-        startDateField = new DateTimePicker();
-        startDateField.setDatePlaceholder("dd/mm/yy");
-        startDateField.setTimePlaceholder("00:00 AM");
-        startDateField.setWidth("250px");
-        startDateField.addClassName("custom-textfield");
+        HorizontalLayout startDate = new HorizontalLayout();
+        Element startDateInput = new Element("input");
+
+        startDateInput.setAttribute("type", "datetime-local");
+        startDateInput.setAttribute("id", "nativeDate");
+        startDateInput.setAttribute("value", "2025-08-05");
+        startDateInput.setAttribute("class", "custom-date");
 
         // Arrow icon between dates
         Icon arrowIcon = new Icon(VaadinIcon.ARROW_RIGHT);
@@ -444,14 +448,17 @@ public final class OrderingView extends Div {
                 .set("margin", "0 8px")
                 .set("align-self", "center");
 
-        // End date picker
-        endDateField = new DateTimePicker();
-        endDateField.setDatePlaceholder("dd/mm/yy");
-        endDateField.setTimePlaceholder("00:00 AM");
-        endDateField.setWidth("250px");
-        endDateField.addClassName("custom-textfield");
+        HorizontalLayout endDate = new HorizontalLayout();
+        Element endDateInput = new Element("input");
 
-        dateTimeRow.add(startDateField, arrowIcon, endDateField);
+        endDateInput.setAttribute("type", "datetime-local");
+        endDateInput.setAttribute("id", "nativeDate");
+        endDateInput.setAttribute("value", "2025-08-05");
+        endDateInput.setAttribute("class", "custom-date");
+
+        startDate.getElement().appendChild(startDateInput);
+        endDate.getElement().appendChild(endDateInput);
+        dateTimeRow.add(startDate, arrowIcon, endDate);
 
         // Note field
         noteField = new TextArea("Note");
@@ -1009,29 +1016,99 @@ public final class OrderingView extends Div {
         bottom.setAlignItems(FlexComponent.Alignment.CENTER);
         bottom.getStyle().set("margin-top", "20px");
 
+        // Create PIN dialog with custom styling
+        Dialog pinDialog = new Dialog();
+        pinDialog.setCloseOnEsc(false);
+        pinDialog.setCloseOnOutsideClick(false);
+
+        // Header with close button
+        HorizontalLayout header = new HorizontalLayout();
+        header.setWidthFull();
+        header.setJustifyContentMode(FlexComponent.JustifyContentMode.BETWEEN);
+        header.setAlignItems(FlexComponent.Alignment.CENTER);
+
+        // Close button (X)
+        Button closeButton = new Button("×");
+        closeButton.getStyle()
+                .set("background", "none")
+                .set("border", "none")
+                .set("font-size", "24px")
+                .set("color", "#9CA3AF")
+                .set("cursor", "pointer")
+                .set("padding", "0")
+                .set("width", "30px")
+                .set("height", "30px");
+        closeButton.addClickListener(e -> pinDialog.close());
+
+        header.add(new Span(), closeButton); // Empty span for spacing
+
+        // Title and subtitle
+        H3 title = new H3("Buat PIN Keamananmu");
+        title.getStyle()
+                .set("margin", "0")
+                .set("font-size", "20px")
+                .set("font-weight", "600")
+                .set("color", "#1F2937")
+                .set("text-align", "center");
+
+        Paragraph subtitle = new Paragraph("Agar proses permintaan barang lebih aman, silakan buat PIN unik yang hanya kamu yang tahu.");
+        subtitle.addClassName("subtitle-pin");
+
+        // PIN input field
+        PinCodeField pinCodeField = new PinCodeField(4);
+        pinCodeField.addClassName("pin-code-field");
+
+        // Button layout
+        HorizontalLayout buttonLayout = new HorizontalLayout();
+        buttonLayout.setWidthFull();
+        buttonLayout.setSpacing(true);
+        buttonLayout.setJustifyContentMode(FlexComponent.JustifyContentMode.CENTER);
+
+        // Cancel button
+        Button cancelButton = new Button("Cancel");
+        cancelButton.addClassName("cancel-btn");
+        cancelButton.addClickListener(e -> pinDialog.close());
+
+        // Save button
+        Button saveButton = new Button("Save");
+        saveButton.addClassName("save-btn");
+        saveButton.addClickListener(e -> {
+            String pin = pinCodeField.getValue();
+            if (pin.length() == 4) {
+                processOrderSubmission();
+                pinDialog.close();
+                Notification.show("PIN berhasil disimpan!");
+            } else {
+                Notification.show("Mohon masukkan PIN 4 digit yang valid", 3000, Notification.Position.MIDDLE);
+            }
+        });
+
+        buttonLayout.add(cancelButton, saveButton);
+
+        // Dialog layout
+        VerticalLayout dialogLayout = new VerticalLayout();
+        dialogLayout.setPadding(true);
+        dialogLayout.setSpacing(false);
+        dialogLayout.setAlignItems(FlexComponent.Alignment.CENTER);
+        dialogLayout.getStyle()
+                .set("padding", "14px")
+                .set("background-color", "white");
+
+        dialogLayout.add(header, title, subtitle, pinCodeField, buttonLayout);
+        pinDialog.add(dialogLayout);
+
         // Submit button
         Button submitBtn = new Button("Submit");
         submitBtn.addClickListener(event -> {
-            Products[] productArray = selectedProducts.stream()
-                    .filter(SelectedProduct::isSelected)
-                    .map(selected -> {
-                        Products p = selected.getProduct();
-                        p.setQuantity(selected.getQty());
-                        return p;
-                    })
-                    .toArray(Products[]::new);
-
-            for (Products selectedProduct : productArray) {
-                System.out.println("Produk " + selectedProduct.getProductName() + " dipilih.");
-            }
-            System.out.println(nameField.getValue());
-            Asset submitedAsset = new Asset(
-                    "0", startDateField.getValue(), endDateField.getValue(), "",
-                    "0", noteField.getValue(), selectedLocation, productArray, statusCombo.getValue(), nameField.getValue(), classCombo.getValue()
-            );
-
-            assetController.InsertAsset(submitedAsset);
+            pinDialog.open();
+            // Delay focus to ensure dialog is fully rendered
+            UI.getCurrent().access(() -> {
+                getUI().ifPresent(ui -> ui.getPage().executeJs(
+                        "setTimeout(() => { $0.focusFirstField(); }, 100);", pinCodeField
+                ));
+            });
         });
+
         submitBtn.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
         submitBtn.getStyle()
                 .set("background-color", "#7c3aed")
@@ -1040,6 +1117,25 @@ public final class OrderingView extends Div {
 
         bottom.add(submitBtn);
         return bottom;
+    }
+
+    private void processOrderSubmission() {
+        Products[] productArray = selectedProducts.stream()
+                .filter(SelectedProduct::isSelected)
+                .map(selected -> {
+                    Products p = selected.getProduct();
+                    p.setQuantity(selected.getQty());
+                    return p;
+                })
+                .toArray(Products[]::new);
+
+        Asset submitedAsset = new Asset(
+                "0", startDateField.getValue(), endDateField.getValue(), "",
+                "0", noteField.getValue(), selectedLocation, productArray,
+                statusCombo.getValue(), nameField.getValue(), classCombo.getValue()
+        );
+
+        assetController.InsertAsset(submitedAsset);
     }
 
     private Component createMobileLayout() {

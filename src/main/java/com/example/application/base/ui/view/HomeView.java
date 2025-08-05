@@ -1,6 +1,7 @@
 package com.example.application.base.ui.view;
 
 import com.vaadin.flow.component.Html;
+import com.vaadin.flow.component.Text;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
@@ -10,6 +11,7 @@ import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.html.*;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
+import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.Route;
@@ -23,6 +25,7 @@ import com.vaadin.flow.theme.lumo.LumoUtility;
 
 //@CssImport(value = "./themes/default/home-view.css", themeFor = "vaadin-vertical-layout")
 public class HomeView extends VerticalLayout {
+    private Dialog helpDialog;
 
     public HomeView() {
         setSizeFull();
@@ -99,13 +102,9 @@ public class HomeView extends VerticalLayout {
         // Tombol Service dan Get Started di kanan
         Button serviceBtn = new Button("Service");
         serviceBtn.addClassName("navigation-btn");
+        createServiceDialog();
+        serviceBtn.addClickListener(e -> helpDialog.open());
 
-        Dialog serviceDialog = createServiceDialog();
-
-        // Tambahkan click listener untuk membuka dialog
-        serviceBtn.addClickListener(e -> {
-            serviceDialog.open();
-        });
 
         Button getStartedBtn = new Button("Get Started");
         getStartedBtn.addClickListener(e -> {
@@ -295,123 +294,117 @@ public class HomeView extends VerticalLayout {
         return blogSection;
     }
 
-    private Dialog createServiceDialog() {
-        Dialog dialog = new Dialog();
-        dialog.setCloseOnEsc(true);
-        dialog.setCloseOnOutsideClick(true);
-
-        // Set ukuran dialog
-        dialog.setWidth("400px");
-        dialog.setHeight("auto");
-
-        // Layout utama
-        VerticalLayout dialogLayout = new VerticalLayout();
-        dialogLayout.setPadding(false);
-        dialogLayout.setSpacing(false);
-        dialogLayout.setAlignItems(Alignment.CENTER);
-        dialogLayout.getStyle()
-                .set("padding", "30px")
-                .set("background", "white")
-                .set("border-radius", "12px");
-
-        // Tombol close (X) di pojok kanan atas
-        Button closeTopButton = new Button();
-        closeTopButton.setIcon(VaadinIcon.CLOSE.create());
-        closeTopButton.addThemeVariants(ButtonVariant.LUMO_TERTIARY_INLINE);
-        closeTopButton.getStyle()
-                .set("position", "absolute")
-                .set("top", "15px")
-                .set("right", "15px")
-                .set("color", "#666")
-                .set("background", "transparent")
-                .set("border", "none")
-                .set("cursor", "pointer");
-        closeTopButton.addClickListener(e -> dialog.close());
-
-        // Icon headset
-        Icon headsetIcon = VaadinIcon.HEADSET.create();
-        headsetIcon.setSize("48px");
-        headsetIcon.getStyle()
-                .set("color", "#333")
-                .set("margin-bottom", "20px");
-
-        // Title
-        H2 title = new H2("Butuh Bantuan? Hubungi Admin Layanan");
-        title.getStyle()
-                .set("text-align", "center")
-                .set("font-size", "22px")
-                .set("font-weight", "600")
-                .set("color", "#333")
-                .set("margin", "0 0 20px 0")
-                .set("line-height", "1.3");
-
-        // Description
-        Paragraph description = new Paragraph("Jika Anda mengalami kendala atau memiliki pertanyaan " +
-                "seputar peminjaman barang, silakan hubungi admin melalui " +
-                "telepon atau email yang tersedia.");
-        description.getStyle()
-                .set("text-align", "center")
-                .set("color", "#666")
-                .set("font-size", "14px")
-                .set("line-height", "1.5")
-                .set("margin", "0 0 30px 0")
-                .set("max-width", "320px");
-
-        // Contact info container
-        VerticalLayout contactLayout = new VerticalLayout();
-        contactLayout.setPadding(false);
-        contactLayout.setSpacing(false);
-        contactLayout.setAlignItems(Alignment.CENTER);
-        contactLayout.getStyle().set("margin-bottom", "30px");
-
-        // Phone number
-        Paragraph phone = new Paragraph("(+62) 88972349293847");
-        phone.getStyle()
-                .set("font-weight", "500")
-                .set("text-align", "center")
-                .set("color", "#007bff")
-                .set("font-size", "16px")
-                .set("margin", "0 0 8px 0")
-                .set("cursor", "pointer");
-
-        // Email
-        Paragraph email = new Paragraph("24assets@gmail.com");
-        email.getStyle()
-                .set("font-weight", "500")
-                .set("text-align", "center")
-                .set("color", "#007bff")
-                .set("font-size", "16px")
-                .set("margin", "0")
-                .set("cursor", "pointer");
-
-        contactLayout.add(phone, email);
+    private void createServiceDialog() {
+        helpDialog = new Dialog();
+        helpDialog.setCloseOnEsc(true);
+        helpDialog.setCloseOnOutsideClick(true);
 
         // Close button
-        Button closeButton = new Button("Tutup", e -> dialog.close());
-        closeButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+        Button closeButton = new Button("x");
+        closeButton.addClickListener(e -> helpDialog.close());
         closeButton.getStyle()
-                .set("background", "#007bff")
-                .set("color", "white")
-                .set("border", "none")
-                .set("padding", "12px 30px")
-                .set("border-radius", "6px")
+                .set("position", "absolute")
+                .set("top", "12px")
+                .set("right", "12px")
+                .set("background", "none")
+                .set("font-size", "24px")
+                .set("color", "#666")
+                .set("cursor", "pointer")
+                .set("z-index", "1000");
+
+        // Icon container
+        Div iconContainer = new Div();
+        iconContainer.getStyle()
+                .set("text-align", "center")
+                .set("margin-bottom", "20px");
+
+        Span headsetIcon = new Span(new Icon(VaadinIcon.HEADSET));
+        headsetIcon.getStyle()
+                .set("font-size", "48px")
+                .set("display", "block")
+                .set("margin-bottom", "16px");
+
+        iconContainer.add(headsetIcon);
+
+        // Header
+        H2 header = new H2("Butuh Bantuan? Hubungi Admin Layanan");
+        header.getStyle()
+                .set("margin", "0 0 16px 0")
+                .set("color", "#333")
+                .set("font-size", "1.25rem")
+                .set("font-weight", "600")
+                .set("text-align", "center")
+                .set("line-height", "1.4");
+
+        // Content
+        Paragraph content = new Paragraph(
+                "Jika Anda mengalami kendala atau memiliki pertanyaan " +
+                        "seputar peminjaman barang, silakan hubungi admin melalui " +
+                        "telepon atau email yang tersedia.");
+        content.getStyle()
+                .set("margin", "0 0 12px 0")
+                .set("color", "#666")
+                .set("font-size", "0.9rem")
+                .set("line-height", "1.5")
+                .set("text-align", "center");
+
+        // Contact info container
+        Div contactContainer = new Div();
+        contactContainer.getStyle()
+                .set("text-align", "center")
+                .set("margin-top", "10px");
+
+        // Phone number
+        Div phone = new Div(new Text("(+82) 88972349289847"));
+        phone.getStyle()
+                .set("margin", "8px 0")
                 .set("font-weight", "500")
-                .set("cursor", "pointer");
+                .set("font-size", "1rem")
+                .set("color", "#333");
 
-        // Tambahkan semua komponen ke layout
-        dialogLayout.add(headsetIcon, title, description, contactLayout, closeButton);
+        // Email
+        Div email = new Div(new Text("24assets@gmail.com"));
+        email.getStyle()
+                .set("margin", "8px 0")
+                .set("font-weight", "400")
+                .set("font-size", "0.9rem")
+                .set("color", "#888");
 
-        // Container untuk positioning tombol close
-        Div container = new Div();
-        container.getStyle().set("position", "relative");
-        container.add(closeTopButton, dialogLayout);
+        contactContainer.add(phone, email);
 
-        dialog.add(container);
+        // Main container with relative positioning for close button
+        Div mainContainer = new Div();
+        mainContainer.getStyle()
+                .set("position", "relative")
+                .set("width", "100%");
 
-        // Styling untuk dialog overlay
-        dialog.getElement().getStyle()
-                .set("--lumo-border-radius", "12px");
+        mainContainer.add(closeButton);
 
-        return dialog;
+        // Layout
+        VerticalLayout dialogLayout = new VerticalLayout(
+                iconContainer,
+                header,
+                content,
+                contactContainer
+        );
+
+        dialogLayout.setPadding(false);
+        dialogLayout.setSpacing(false);
+        dialogLayout.setAlignItems(FlexComponent.Alignment.CENTER);
+        dialogLayout.getStyle()
+                .set("max-width", "500px")
+                .set("width", "100%")
+                .set("padding", "22px 24px")
+                .set("font-family", "'Poppins', sans-serif")
+                .set("background", "white")
+                .set("border-radius", "15px");
+
+        mainContainer.add(dialogLayout);
+        helpDialog.add(mainContainer);
+
+        // Optional: Add overlay styling
+        helpDialog.getElement().getStyle()
+                .set("--lumo-surface-color", "white");
+
     }   
 }

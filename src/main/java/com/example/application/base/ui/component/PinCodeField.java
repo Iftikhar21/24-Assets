@@ -2,6 +2,7 @@ package com.example.application.base.ui.component;
 
 import com.vaadin.flow.component.customfield.CustomField;
 import com.vaadin.flow.component.dependency.CssImport;
+import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.value.ValueChangeMode;
@@ -16,6 +17,7 @@ public class PinCodeField extends CustomField<String> {
 
         fields = new TextField[length];
         HorizontalLayout layout = new HorizontalLayout();
+        layout.setJustifyContentMode(FlexComponent.JustifyContentMode.CENTER);
         layout.setSpacing(true);
 
         for (int i = 0; i < length; i++) {

@@ -433,39 +433,44 @@ public final class OrderingView extends Div {
         comboRow.add(statusCombo, gradeCombo, classCombo, locationCombo);
 
         // Date time row
-        HorizontalLayout dateTimeRow = new HorizontalLayout();
-        dateTimeRow.setWidthFull();
-        dateTimeRow.setSpacing(true);
-        dateTimeRow.setAlignItems(FlexComponent.Alignment.END);
-        dateTimeRow.getStyle().set("margin-bottom", "16px");
+        HorizontalLayout dateContainer = new HorizontalLayout();
+        dateContainer.addClassName("custom-date-container");
+        dateContainer.setSpacing(false);
+        dateContainer.setPadding(false);
 
-        HorizontalLayout startDate = new HorizontalLayout();
+        // Start Date
+        VerticalLayout startDateWrapper = new VerticalLayout();
+        startDateWrapper.addClassName("date-input-wrapper");
+        startDateWrapper.setSpacing(false);
+        startDateWrapper.setPadding(false);
+
         Element startDateInput = new Element("input");
-
         startDateInput.setAttribute("type", "datetime-local");
-        startDateInput.setAttribute("id", "nativeDate");
-        startDateInput.setAttribute("value", "2025-08-05");
+        startDateInput.setAttribute("value", "2025-08-05T00:00");
         startDateInput.setAttribute("class", "custom-date");
 
-        // Arrow icon between dates
+        startDateWrapper.getElement().appendChild(startDateInput);
+
+        // Arrow Icon
         Icon arrowIcon = new Icon(VaadinIcon.ARROW_RIGHT);
-        arrowIcon.setSize("16px");
-        arrowIcon.getStyle()
-                .set("color", "#6b7280")
-                .set("margin", "0 8px")
-                .set("align-self", "center");
+        arrowIcon.addClassName("date-arrow");
 
-        HorizontalLayout endDate = new HorizontalLayout();
+        // End Date
+        VerticalLayout endDateWrapper = new VerticalLayout();
+        endDateWrapper.addClassName("date-input-wrapper");
+        endDateWrapper.setSpacing(false);
+        endDateWrapper.setPadding(false);
+
         Element endDateInput = new Element("input");
-
         endDateInput.setAttribute("type", "datetime-local");
-        endDateInput.setAttribute("id", "nativeDate");
-        endDateInput.setAttribute("value", "2025-08-05");
+        endDateInput.setAttribute("value", "2025-08-05T00:00");
         endDateInput.setAttribute("class", "custom-date");
 
-        startDate.getElement().appendChild(startDateInput);
-        endDate.getElement().appendChild(endDateInput);
-        dateTimeRow.add(startDate, arrowIcon, endDate);
+        endDateWrapper.getElement().appendChild(endDateInput);
+
+        // Gabungkan semua komponen
+        dateContainer.add(startDateWrapper, arrowIcon, endDateWrapper);
+        dateContainer.setAlignItems(FlexComponent.Alignment.END);
 
         // Note field
         noteField = new TextArea("Note");
@@ -477,7 +482,7 @@ public final class OrderingView extends Div {
                 .set("min-height", "80px");
 
         // Add all components to form section
-        formSection.add(orderingHeader, nameField, comboRow, dateTimeRow, noteField);
+        formSection.add(orderingHeader, nameField, comboRow, dateContainer, noteField);
 
         return formSection;
     }
@@ -520,14 +525,15 @@ public final class OrderingView extends Div {
         historySearch.setPlaceholder("Search history");
         historySearch.setPrefixComponent(new Icon(VaadinIcon.SEARCH));
         historySearch.setWidthFull();
+        historySearch.addClassName("custom-textfield");
 
         Button sortBtn = new Button("Sort by", new Icon(VaadinIcon.ARROW_LONG_DOWN));
         sortBtn.setHeight("50px");
-        sortBtn.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
+        sortBtn.addClassName("filter-sort-btn");
 
         Button filterBtn = new Button("Filter", new Icon(VaadinIcon.ALIGN_CENTER));
         filterBtn.setHeight("50px");
-        filterBtn.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
+        filterBtn.addClassName("filter-sort-btn");
 
         HorizontalLayout bottomRow = new HorizontalLayout(sortBtn, filterBtn);
         bottomRow.setJustifyContentMode(FlexComponent.JustifyContentMode.START);

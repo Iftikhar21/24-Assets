@@ -51,6 +51,7 @@ public final class OrderingView extends Div {
 
     private Component desktopLayout;
     private Component mobileLayout;
+    private VerticalLayout gridSection;
 
     private ProductsController productsController = new ProductsController();
     private LocationController locationController = new LocationController();
@@ -509,7 +510,7 @@ public final class OrderingView extends Div {
 
         // Search field
         TextField historySearch = new TextField();
-        historySearch.setPlaceholder("Search goods");
+        historySearch.setPlaceholder("Search history");
         historySearch.setPrefixComponent(new Icon(VaadinIcon.SEARCH));
         historySearch.setWidthFull();
 
@@ -690,11 +691,20 @@ public final class OrderingView extends Div {
 
         TextField nameSearch = new TextField();
         nameSearch.setWidthFull();
-        nameSearch.setPlaceholder("Search goods");
+        nameSearch.setPlaceholder("Search assets");
         nameSearch.addClassName("custom-textfield");
         nameSearch.setPrefixComponent(new Icon(VaadinIcon.SEARCH));
         nameSearch.getStyle()
                 .set("margin", "0");
+
+        nameSearch.addValueChangeListener(e -> {
+//            refreshGridProduct(allProducts);
+            List<Products> filtered = allProducts.stream()
+                .filter(product -> product.getProductName().toLowerCase().contains(e.getValue().toLowerCase()))
+                .toList();
+
+            refreshGridProduct(filtered);
+        });
 
         goodsSearch.add(nameSearch);
         goodsSearch.setFlexGrow(1, nameSearch);
@@ -711,12 +721,20 @@ public final class OrderingView extends Div {
                 .set("gap", "8px")
                 .set("padding-top", "10px");
 
-        Button allBtn = createCategoryButton("All", true);
+        Button allBtn = createCategoryButton("All", false);
         List<Category> listCategory = categoryController.getListCategory();
 
         filters.add(allBtn);
+        allBtn.addClickListener(e -> refreshGridProduct(allProducts));
         listCategory.forEach(category -> {
             Button categoryBtn = createCategoryButton(category.getCategoryName(), false);
+            categoryBtn.addClickListener(e -> {
+                List<Products> filtered = allProducts.stream()
+                    .filter(product -> product.getCategoryName().equals(category.getCategoryName()))
+                    .collect(Collectors.toList());
+
+                refreshGridProduct(filtered);
+            });
             filters.add(categoryBtn);
         });
 
@@ -765,7 +783,7 @@ public final class OrderingView extends Div {
     }
 
     private VerticalLayout createProductsGrid() {
-        VerticalLayout gridSection = new VerticalLayout();
+        gridSection = new VerticalLayout();
         gridSection.setPadding(false);
         gridSection.setSpacing(true);
         gridSection.getStyle()
@@ -773,9 +791,17 @@ public final class OrderingView extends Div {
                 .set("max-height", "575px") // Set max height for scrollable area
                 .set("margin-bottom", "16px");
 
+        refreshGridProduct(allProducts);
+
+        return gridSection;
+    }
+
+    private void refreshGridProduct(List<Products> listProducts) {
+        gridSection.removeAll();
+
         // Group products by category
-        Map<String, List<Products>> productsByCategory = allProducts.stream()
-                .collect(Collectors.groupingBy(Products::getCategoryName));
+        Map<String, List<Products>> productsByCategory = listProducts.stream()
+            .collect(Collectors.groupingBy(Products::getCategoryName));
 
         // Create sections for each category
         for (Map.Entry<String, List<Products>> entry : productsByCategory.entrySet()) {
@@ -784,21 +810,19 @@ public final class OrderingView extends Div {
 
             // Convert Products to HorizontalLayout cards (changed from VerticalLayout)
             List<HorizontalLayout> productCards = categoryProducts.stream()
-                    .map(product -> createProductCard(
-                            product.getProductID().toString(),
-                            product.getProductName(),
-                            product.getCategoryName(),
-                            product.getStock() > 0 ? "Ready" : "Unavailable", // status
-                            product.getStock(), // stock
-                            selectedProducts))
-                    .collect(Collectors.toList());
+                .map(product -> createProductCard(
+                    product.getProductID().toString(),
+                    product.getProductName(),
+                    product.getCategoryName(),
+                    product.getStock() > 0 ? "Ready" : "Unavailable", // status
+                    product.getStock(), // stock
+                    selectedProducts))
+                .collect(Collectors.toList());
 
             // Create category section
             VerticalLayout categorySection = createCategorySection(categoryName, productCards);
             gridSection.add(categorySection);
         }
-
-        return gridSection;
     }
 
     private VerticalLayout createCategorySection(String categoryName, List<HorizontalLayout> products) {

@@ -3,9 +3,11 @@ package com.example.application.base.ui.view;
 import com.example.application.base.ui.component.ViewToolbar;
 import com.example.application.base.ui.component.PinCodeField;
 import com.example.application.controller.AssetController;
+import com.example.application.controller.CategoryController;
 import com.example.application.controller.LocationController;
 import com.example.application.controller.ProductsController;
 import com.example.application.model.Asset;
+import com.example.application.model.Category;
 import com.example.application.model.Location;
 import com.example.application.model.Products;
 import com.vaadin.flow.component.Component;
@@ -52,10 +54,12 @@ public final class OrderingView extends Div {
 
     private Component desktopLayout;
     private Component mobileLayout;
+    private VerticalLayout gridSection;
 
     private ProductsController productsController = new ProductsController();
     private LocationController locationController = new LocationController();
     private AssetController assetController = new AssetController();
+    private CategoryController categoryController = new CategoryController();
 
     private TextField nameField;
     private ComboBox<String> statusCombo;
@@ -74,6 +78,7 @@ public final class OrderingView extends Div {
     private Dialog helpDialog;
     private VerticalLayout contentArea;
 
+    private List<Products> allProducts = new ArrayList<>();
 
     // SelectedProduct data class
     public static class SelectedProduct {
@@ -137,6 +142,8 @@ public final class OrderingView extends Div {
         buildLayoutBasedOnDevice(layout -> {
             add(layout);
         });
+
+        allProducts = productsController.getListProducts("");
 
     }
 
@@ -510,7 +517,7 @@ public final class OrderingView extends Div {
 
         // Search field
         TextField historySearch = new TextField();
-        historySearch.setPlaceholder("Search goods");
+        historySearch.setPlaceholder("Search history");
         historySearch.setPrefixComponent(new Icon(VaadinIcon.SEARCH));
         historySearch.setWidthFull();
 
@@ -691,11 +698,20 @@ public final class OrderingView extends Div {
 
         TextField nameSearch = new TextField();
         nameSearch.setWidthFull();
-        nameSearch.setPlaceholder("Search goods");
+        nameSearch.setPlaceholder("Search assets");
         nameSearch.addClassName("custom-textfield");
         nameSearch.setPrefixComponent(new Icon(VaadinIcon.SEARCH));
         nameSearch.getStyle()
                 .set("margin", "0");
+
+        nameSearch.addValueChangeListener(e -> {
+//            refreshGridProduct(allProducts);
+            List<Products> filtered = allProducts.stream()
+                .filter(product -> product.getProductName().toLowerCase().contains(e.getValue().toLowerCase()))
+                .toList();
+
+            refreshGridProduct(filtered);
+        });
 
         goodsSearch.add(nameSearch);
         goodsSearch.setFlexGrow(1, nameSearch);
@@ -712,23 +728,27 @@ public final class OrderingView extends Div {
                 .set("gap", "8px")
                 .set("padding-top", "10px");
 
-        Image logoAll = new Image(DownloadHandler.forClassResource(getClass(),"/images/catAll.png"), "Logo All");
-        Image logoSoundSys = new Image(DownloadHandler.forClassResource(getClass(),"/images/catSoundSystem.png"), "Logo Sound System");
-        Image logoElectronics = new Image(DownloadHandler.forClassResource(getClass(),"/images/catElectronic.png"), "Logo Electronic");
-        Image logoRoomKeys = new Image(DownloadHandler.forClassResource(getClass(),"/images/catRoomNames.png"), "Logo Room Keys");
-        Image logoProjector = new Image(DownloadHandler.forClassResource(getClass(),"/images/catProjector.png"), "Logo Projector");
+        Button allBtn = createCategoryButton("All", false);
+        List<Category> listCategory = categoryController.getListCategory();
 
-        Button allBtn = createCategoryButton(logoAll, "All", true);
-        Button soundBtn = createCategoryButton(logoSoundSys, "Sound System", false);
-        Button electronicBtn = createCategoryButton(logoElectronics, "Electronic", false);
-        Button keysBtn = createCategoryButton(logoRoomKeys, "Room keys", false);
-        Button projectorBtn = createCategoryButton(logoProjector, "Projector", false);
+        filters.add(allBtn);
+        allBtn.addClickListener(e -> refreshGridProduct(allProducts));
+        listCategory.forEach(category -> {
+            Button categoryBtn = createCategoryButton(category.getCategoryName(), false);
+            categoryBtn.addClickListener(e -> {
+                List<Products> filtered = allProducts.stream()
+                    .filter(product -> product.getCategoryName().equals(category.getCategoryName()))
+                    .collect(Collectors.toList());
 
-        filters.add(allBtn, soundBtn, electronicBtn, keysBtn, projectorBtn);
+                refreshGridProduct(filtered);
+            });
+            filters.add(categoryBtn);
+        });
+
         return filters;
     }
 
-    private Button createCategoryButton(Image icon, String text, boolean active) {
+    private Button createCategoryButton(String text, boolean active) {
         Button btn = new Button();
         btn.setWidth("auto"); // Let buttons size based on content
         btn.getStyle()
@@ -739,13 +759,12 @@ public final class OrderingView extends Div {
         content.setSpacing(true);
         content.setPadding(false);
 
-        Span iconSpan = new Span(icon);
         Span textSpan = new Span(text);
         textSpan.getStyle()
                 .set("font-size", "12px")
                 .set("white-space", "nowrap"); // Prevent text wrapping
 
-        content.add(iconSpan, textSpan);
+        content.add(textSpan);
         btn.getElement().appendChild(content.getElement());
 
         btn.getStyle()
@@ -771,7 +790,7 @@ public final class OrderingView extends Div {
     }
 
     private VerticalLayout createProductsGrid() {
-        VerticalLayout gridSection = new VerticalLayout();
+        gridSection = new VerticalLayout();
         gridSection.setPadding(false);
         gridSection.setSpacing(true);
         gridSection.getStyle()
@@ -779,11 +798,17 @@ public final class OrderingView extends Div {
                 .set("max-height", "575px") // Set max height for scrollable area
                 .set("margin-bottom", "16px");
 
-        List<Products> allProducts = productsController.getListProducts("");
+        refreshGridProduct(allProducts);
+
+        return gridSection;
+    }
+
+    private void refreshGridProduct(List<Products> listProducts) {
+        gridSection.removeAll();
 
         // Group products by category
-        Map<String, List<Products>> productsByCategory = allProducts.stream()
-                .collect(Collectors.groupingBy(Products::getCategoryName));
+        Map<String, List<Products>> productsByCategory = listProducts.stream()
+            .collect(Collectors.groupingBy(Products::getCategoryName));
 
         // Create sections for each category
         for (Map.Entry<String, List<Products>> entry : productsByCategory.entrySet()) {
@@ -792,21 +817,19 @@ public final class OrderingView extends Div {
 
             // Convert Products to HorizontalLayout cards (changed from VerticalLayout)
             List<HorizontalLayout> productCards = categoryProducts.stream()
-                    .map(product -> createProductCard(
-                            product.getProductID().toString(),
-                            product.getProductName(),
-                            product.getCategoryName(),
-                            product.getStock() > 0 ? "Ready" : "Unavailable", // status
-                            product.getStock(), // stock
-                            selectedProducts))
-                    .collect(Collectors.toList());
+                .map(product -> createProductCard(
+                    product.getProductID().toString(),
+                    product.getProductName(),
+                    product.getCategoryName(),
+                    product.getStock() > 0 ? "Ready" : "Unavailable", // status
+                    product.getStock(), // stock
+                    selectedProducts))
+                .collect(Collectors.toList());
 
             // Create category section
             VerticalLayout categorySection = createCategorySection(categoryName, productCards);
             gridSection.add(categorySection);
         }
-
-        return gridSection;
     }
 
     private VerticalLayout createCategorySection(String categoryName, List<HorizontalLayout> products) {

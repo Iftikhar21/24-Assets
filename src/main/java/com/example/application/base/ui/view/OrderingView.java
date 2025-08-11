@@ -80,6 +80,8 @@ public final class OrderingView extends Div {
 
     private List<Products> allProducts = new ArrayList<>();
 
+    private boolean isVisible;
+
     // SelectedProduct data class
     public static class SelectedProduct {
         private String id;
@@ -170,14 +172,24 @@ public final class OrderingView extends Div {
         leftSection.setSpacing(true);
 
         // Menu toggle button
+        isVisible = sidebar.isVisible();
         Button menuButton = new Button(new Icon(VaadinIcon.MENU));
-        menuButton.getStyle().set("color", "#333");
         menuButton.addClickListener(e -> {
-            sidebar.setVisible(!sidebar.isVisible());
-            if (contentArea != null) {
-                contentArea.getStyle().set("margin-left", sidebar.isVisible() ? "250px" : "0");
+            isVisible = !isVisible;
+
+            if (isVisible) {
+                sidebar.getStyle().set("left", "0");
+                contentArea.getStyle()
+                        .set("margin-left", "250px")
+                        .set("transition", "all 0.3s ease-in-out");
+            } else {
+                sidebar.getStyle().set("left", "-250px");
+                contentArea.getStyle()
+                        .set("margin-left", "0")
+                        .set("transition", "all 0.3s ease-in-out");
             }
         });
+
 
         // Title with number "24"
         Image logo24Assets = new Image(DownloadHandler.forClassResource(getClass(),"/images/logo24Assets.png"), "Logo 24 Assets");
@@ -219,12 +231,6 @@ public final class OrderingView extends Div {
 
         // Create sidebar
         sidebar = createSidebar(); // Menggunakan variabel instance yang sudah dideklarasikan
-        sidebar.getStyle()
-                .set("position", "fixed")
-                .set("top", "0")
-                .set("left", "0")
-                .set("bottom", "0")
-                .set("z-index", "100");
 
         // Create content area
         contentArea = new VerticalLayout(); // Menggunakan variabel instance
@@ -289,6 +295,7 @@ public final class OrderingView extends Div {
                 .set("left", "0")
                 .set("bottom", "0")
                 .set("z-index", "100")
+                .set("transition", "all 0.3s ease-in-out")
                 .set("box-shadow", "2px 0 4px rgba(0,0,0,0.1)");
 
         // Logo section

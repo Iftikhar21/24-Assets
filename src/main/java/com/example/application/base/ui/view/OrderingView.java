@@ -1,5 +1,6 @@
 package com.example.application.base.ui.view;
 
+import com.example.application.base.ui.component.PinCodeField;
 import com.example.application.base.ui.component.ViewToolbar;
 import com.example.application.controller.AssetController;
 import com.example.application.controller.CategoryController;
@@ -76,6 +77,8 @@ public final class OrderingView extends Div {
     private VerticalLayout contentArea;
 
     private List<Products> allProducts = new ArrayList<>();
+
+    PinCodeField pinCodeField;
 
     // SelectedProduct data class
     public static class SelectedProduct {
@@ -1032,37 +1035,144 @@ public final class OrderingView extends Div {
         bottom.setAlignItems(FlexComponent.Alignment.CENTER);
         bottom.getStyle().set("margin-top", "20px");
 
+        pinCodeField = new PinCodeField(4);
+
         // Submit button
-        Button submitBtn = new Button("Submit");
-        submitBtn.addClickListener(event -> {
+        Button btnDialog = new Button("Submit");
+
+        Dialog pinDialog = new Dialog();
+        pinDialog.setHeaderTitle("Buat Pin Keamananmu");
+        VerticalLayout pinDialogLayout = createPinDialogLayout();
+
+        pinDialog.add(pinDialogLayout);
+
+        Button submitBtnForm = new Button("Submit");
+        submitBtnForm.addClickListener(event -> {
+            if (pinCodeField.isEmpty()) {
+                return;
+            }
             Products[] productArray = selectedProducts.stream()
-                    .filter(SelectedProduct::isSelected)
-                    .map(selected -> {
-                        Products p = selected.getProduct();
-                        p.setQuantity(selected.getQty());
-                        return p;
-                    })
-                    .toArray(Products[]::new);
+                .filter(SelectedProduct::isSelected)
+                .map(selected -> {
+                    Products p = selected.getProduct();
+                    p.setQuantity(selected.getQty());
+                    return p;
+                })
+                .toArray(Products[]::new);
 
             for (Products selectedProduct : productArray) {
                 System.out.println("Produk " + selectedProduct.getProductName() + " dipilih.");
             }
             System.out.println(nameField.getValue());
             Asset submitedAsset = new Asset(
-                    "0", startDateField.getValue(), endDateField.getValue(), "",
-                    "0", noteField.getValue(), selectedLocation, productArray, statusCombo.getValue(), nameField.getValue(), classCombo.getValue()
+                "0", startDateField.getValue(), endDateField.getValue(), "",
+                pinCodeField.getValue(), noteField.getValue(), selectedLocation, productArray, statusCombo.getValue(), nameField.getValue(), classCombo.getValue()
             );
 
-            assetController.InsertAsset(submitedAsset);
-        });
-        submitBtn.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
-        submitBtn.getStyle()
-                .set("background-color", "#7c3aed")
-                .set("border-radius", "8px")
-                .set("padding", "10px 24px");
+            var result = assetController.InsertAsset(submitedAsset);
 
-        bottom.add(submitBtn);
+            if (result) {
+                pinDialog.close();
+                emptyForm();
+            }
+
+        });
+        submitBtnForm.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+        submitBtnForm.setWidthFull();
+        submitBtnForm.getStyle()
+            .set("background-color", "#7c3aed")
+            .set("border-radius", "8px")
+            .set("padding", "10px 24px");
+        submitBtnForm.addClickListener(event -> {
+        });
+
+        pinDialog.getFooter().add(submitBtnForm);
+
+        btnDialog.addClickListener(event -> {
+            if (validateRequiredFields()) {
+                pinDialog.open();
+            }
+        });
+        btnDialog.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+        btnDialog.getStyle()
+            .set("background-color", "#7c3aed")
+            .set("border-radius", "8px")
+            .set("padding", "10px 24px");
+
+        bottom.add(btnDialog);
         return bottom;
+    }
+
+    private VerticalLayout createPinDialogLayout() {
+        VerticalLayout mainLayout = new VerticalLayout();
+
+        mainLayout.add(new Span("Agar proses peminjaman barang lebih aman, silakan buat PIN unik yang hanya kamu yang tahu."));
+
+        HorizontalLayout pinLayout = new HorizontalLayout();
+        pinLayout.setWidthFull();
+        pinLayout.setAlignItems(FlexComponent.Alignment.CENTER);
+        pinLayout.setJustifyContentMode(FlexComponent.JustifyContentMode.CENTER);
+        pinLayout.add(pinCodeField);
+        mainLayout.add(pinLayout);
+
+        return mainLayout;
+    }
+
+    private boolean validateRequiredFields() {
+        boolean isValid = true;
+
+        if (nameField.isEmpty()) {
+            nameField.setInvalid(true);
+            nameField.setErrorMessage("Name is required");
+            isValid = false;
+        }
+
+        if (startDateField.isEmpty()) {
+            startDateField.setInvalid(true);
+            startDateField.setErrorMessage("Start date is required");
+            isValid = false;
+        }
+
+        if (endDateField.isEmpty()) {
+            endDateField.setInvalid(true);
+            endDateField.setErrorMessage("End date is required");
+            isValid = false;
+        }
+
+        if (selectedLocation == null) {
+            // Assuming there's a way to flag the location field as invalid
+            // setFieldInvalid(locationField, "Location is required");
+            isValid = false;
+        }
+
+        if (statusCombo.isEmpty()) {
+            statusCombo.setInvalid(true);
+            statusCombo.setErrorMessage("Status is required");
+            isValid = false;
+        }
+
+        if (classCombo.isEmpty()) {
+            classCombo.setInvalid(true);
+            classCombo.setErrorMessage("Class is required");
+            isValid = false;
+        }
+
+        return isValid;
+    }
+
+
+    public void emptyForm() {
+        nameField.clear();
+        startDateField.clear();
+        endDateField.clear();
+        selectedLocation = null;
+        statusCombo.clear();
+        classCombo.clear();
+        pinCodeField.clear();
+        noteField.clear();
+
+        selectedProducts.clear();
+
     }
 
     private Component createMobileLayout() {

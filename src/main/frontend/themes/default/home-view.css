@@ -56,6 +56,7 @@ html, body, .home-view, .home-view * {
 
 /* Hero Section */
 .hero-section {
+    padding-top: 200px;
     text-align: center;
     background: #fff;
     color: white;

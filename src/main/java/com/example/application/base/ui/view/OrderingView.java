@@ -41,6 +41,7 @@ import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.streams.DownloadHandler;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -67,8 +68,8 @@ public final class OrderingView extends Div {
     private ComboBox<String> gradeCombo;
     private ComboBox<String> classCombo;
     private ComboBox<Location> locationCombo;
-    private DateTimePicker startDateField;
-    private DateTimePicker endDateField;
+    private Element startDateInput;
+    private Element endDateInput;
     private TextArea noteField;
 
     private Location selectedLocation;
@@ -132,10 +133,10 @@ public final class OrderingView extends Div {
 
         UI.getCurrent().getPage().addStyleSheet("/themes/default/home-view.css");
         getStyle()
-                .set("background-color", "#f8f9fa")
-                .set("font-family", "'Poppins', sans-serif")
-                .set("padding", "0")
-                .set("margin", "0");
+            .set("background-color", "#f8f9fa")
+            .set("font-family", "'Poppins', sans-serif")
+            .set("padding", "0")
+            .set("margin", "0");
 
         getElement().getStyle().set("display", "flex");
         getElement().getStyle().set("flex-direction", "column");
@@ -162,10 +163,10 @@ public final class OrderingView extends Div {
         HorizontalLayout navbar = new HorizontalLayout();
         navbar.setWidthFull();
         navbar.getStyle()
-                .set("background-color", "white")
-                .set("padding", "16px")
-                .set("box-shadow", "0 2px 4px rgba(0,0,0,0.1)")
-                .set("align-items", "center");
+            .set("background-color", "white")
+            .set("padding", "16px")
+            .set("box-shadow", "0 2px 4px rgba(0,0,0,0.1)")
+            .set("align-items", "center");
 
         // Navbar title section
         HorizontalLayout leftSection = new HorizontalLayout();
@@ -181,13 +182,13 @@ public final class OrderingView extends Div {
             if (isVisible) {
                 sidebar.getStyle().set("left", "0");
                 contentArea.getStyle()
-                        .set("margin-left", "250px")
-                        .set("transition", "all 0.3s ease-in-out");
+                    .set("margin-left", "250px")
+                    .set("transition", "all 0.3s ease-in-out");
             } else {
                 sidebar.getStyle().set("left", "-250px");
                 contentArea.getStyle()
-                        .set("margin-left", "0")
-                        .set("transition", "all 0.3s ease-in-out");
+                    .set("margin-left", "0")
+                    .set("transition", "all 0.3s ease-in-out");
             }
         });
 
@@ -195,11 +196,11 @@ public final class OrderingView extends Div {
         // Title with number "24"
         Image logo24Assets = new Image(DownloadHandler.forClassResource(getClass(),"/images/logo24Assets.png"), "Logo 24 Assets");
         logo24Assets.getStyle()
-                .set("align-items", "center")
-                .set("height", "24px");
+            .set("align-items", "center")
+            .set("height", "24px");
         Div title = new Div();
         title.getStyle()
-                .set("align-items", "center");
+            .set("align-items", "center");
         title.add(logo24Assets);
 
         leftSection.add(menuButton, title);
@@ -239,22 +240,22 @@ public final class OrderingView extends Div {
         contentArea.setPadding(false);
         contentArea.setSpacing(false);
         contentArea.getStyle()
-                .set("margin-left", "250px") // Sesuaikan dengan lebar sidebar
-                .set("overflow", "hidden");
+            .set("margin-left", "250px") // Sesuaikan dengan lebar sidebar
+            .set("overflow", "hidden");
 
         // Create navbar
         HorizontalLayout navbar = createNavbar();
         navbar.getStyle()
-                .set("position", "sticky")
-                .set("top", "0")
-                .set("z-index", "90");
+            .set("position", "sticky")
+            .set("top", "0")
+            .set("z-index", "90");
 
         // Create scrollable content
         Div scrollableContent = new Div();
         scrollableContent.setSizeFull();
         scrollableContent.getStyle()
-                .set("overflow-y", "auto")
-                .set("padding-bottom", "20px");
+            .set("overflow-y", "auto")
+            .set("padding-bottom", "20px");
 
         // Create main content
         HorizontalLayout mainContent = new HorizontalLayout();
@@ -290,32 +291,32 @@ public final class OrderingView extends Div {
         sidebar.setPadding(false);
         sidebar.setSpacing(false);
         sidebar.getStyle()
-                .set("background", "#fff")
-                .set("position", "fixed")
-                .set("top", "0")
-                .set("left", "0")
-                .set("bottom", "0")
-                .set("z-index", "100")
-                .set("transition", "all 0.3s ease-in-out")
-                .set("box-shadow", "2px 0 4px rgba(0,0,0,0.1)");
+            .set("background", "#fff")
+            .set("position", "fixed")
+            .set("top", "0")
+            .set("left", "0")
+            .set("bottom", "0")
+            .set("z-index", "100")
+            .set("transition", "all 0.3s ease-in-out")
+            .set("box-shadow", "2px 0 4px rgba(0,0,0,0.1)");
 
         // Logo section
         Image logo24Assets = new Image(DownloadHandler.forClassResource(getClass(),"/images/logo24Assets.png"), "Logo 24 Assets");
         logo24Assets.getStyle()
-                .set("padding-top", "50px")
-                .set("width", "140px");
+            .set("padding-top", "50px")
+            .set("width", "140px");
         VerticalLayout logoSection = new VerticalLayout();
         logoSection.setPadding(true);
         logoSection.setSpacing(false);
         logoSection.setAlignItems(FlexComponent.Alignment.CENTER);
         logoSection.getStyle()
-                .set("padding", "32px 24px");
+            .set("padding", "32px 24px");
         logoSection.add(logo24Assets);
 
         // Spacer to push exit button to bottom
         Div spacer = new Div();
         spacer.getStyle()
-                .set("flex-grow", "1");
+            .set("flex-grow", "1");
 
         // Exit button section
         VerticalLayout exitSection = new VerticalLayout();
@@ -323,7 +324,7 @@ public final class OrderingView extends Div {
         exitSection.setSpacing(false);
         exitSection.setAlignItems(FlexComponent.Alignment.CENTER);
         exitSection.getStyle()
-                .set("padding", "24px");
+            .set("padding", "24px");
 
         Button exitButton = new Button("Exit");
         exitButton.setIcon(new Icon(VaadinIcon.SIGN_OUT));
@@ -345,8 +346,8 @@ public final class OrderingView extends Div {
         leftContent.setPadding(true);
         leftContent.setSpacing(true);
         leftContent.getStyle()
-                .set("padding", "16px")
-                .set("margin-bottom", "16px");
+            .set("padding", "16px")
+            .set("margin-bottom", "16px");
 
         // Form fields
         VerticalLayout formSection = createFormSection();
@@ -366,8 +367,8 @@ public final class OrderingView extends Div {
         orderingHeader.setAlignItems(FlexComponent.Alignment.CENTER);
         orderingHeader.setJustifyContentMode(FlexComponent.JustifyContentMode.START);
         orderingHeader.getStyle()
-                .set("padding", "0 0 16px 0")
-                .set("margin", "0");
+            .set("padding", "0 0 16px 0")
+            .set("margin", "0");
 
         Icon orderIcon = new Icon(VaadinIcon.ALIGN_LEFT);
         orderIcon.setColor("#7c3aed");
@@ -375,10 +376,10 @@ public final class OrderingView extends Div {
 
         Span orderingText = new Span("Ordering");
         orderingText.getStyle()
-                .set("color", "#7c3aed")
-                .set("font-weight", "500")
-                .set("font-size", "16px")
-                .set("margin-left", "8px");
+            .set("color", "#7c3aed")
+            .set("font-weight", "500")
+            .set("font-size", "16px")
+            .set("margin-left", "8px");
 
         orderingHeader.add(orderIcon, orderingText);
 
@@ -388,18 +389,18 @@ public final class OrderingView extends Div {
         formSection.setSpacing(false);
         formSection.setWidthFull();
         formSection.getStyle()
-                .set("background-color", "#ffffff")
-                .set("border-radius", "8px")
-                .set("padding", "20px")
-                .set("box-shadow", "0 1px 3px rgba(0,0,0,0.1)")
-                .set("border", "1px solid #e5e7eb");
+            .set("background-color", "#ffffff")
+            .set("border-radius", "8px")
+            .set("padding", "20px")
+            .set("box-shadow", "0 1px 3px rgba(0,0,0,0.1)")
+            .set("border", "1px solid #e5e7eb");
 
         // Name field
         nameField = new TextField("Name");
         nameField.addClassName("custom-textfield");
         nameField.setWidthFull();
         nameField.getStyle()
-                .set("margin-bottom", "16px");
+            .set("margin-bottom", "16px");
 
         // Row with 4 combo boxes
         HorizontalLayout comboRow = new HorizontalLayout();
@@ -451,11 +452,11 @@ public final class OrderingView extends Div {
         startDateWrapper.addClassName("date-input-wrapper");
         startDateWrapper.setSpacing(false);
         startDateWrapper.setPadding(false);
-
-        Element startDateInput = new Element("input");
+        startDateInput = new Element("input");
         startDateInput.setAttribute("type", "datetime-local");
-        startDateInput.setAttribute("value", "2025-08-05T00:00");
+        startDateInput.setAttribute("value", LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm")));
         startDateInput.setAttribute("class", "custom-date");
+
 
         startDateWrapper.getElement().appendChild(startDateInput);
 
@@ -469,9 +470,9 @@ public final class OrderingView extends Div {
         endDateWrapper.setSpacing(false);
         endDateWrapper.setPadding(false);
 
-        Element endDateInput = new Element("input");
+        endDateInput = new Element("input");
         endDateInput.setAttribute("type", "datetime-local");
-        endDateInput.setAttribute("value", "2025-08-05T00:00");
+        endDateInput.setAttribute("value", LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm")));
         endDateInput.setAttribute("class", "custom-date");
 
         endDateWrapper.getElement().appendChild(endDateInput);
@@ -486,8 +487,8 @@ public final class OrderingView extends Div {
         noteField.setWidthFull();
         noteField.setHeight("80px");
         noteField.getStyle()
-                .set("resize", "vertical")
-                .set("min-height", "80px");
+            .set("resize", "vertical")
+            .set("min-height", "80px");
 
         // Add all components to form section
         formSection.add(orderingHeader, nameField, comboRow, dateContainer, noteField);
@@ -502,11 +503,11 @@ public final class OrderingView extends Div {
         historySection.setHeight("auto");
 
         historySection.getStyle()
-                .set("background-color", "#ffffff")
-                .set("border-radius", "12px")
-                .set("padding", "16px")
-                .set("margin-bottom", "16px")
-                .set("box-shadow", "0 2px 4px rgba(0,0,0,0.1)");
+            .set("background-color", "#ffffff")
+            .set("border-radius", "12px")
+            .set("padding", "16px")
+            .set("margin-bottom", "16px")
+            .set("box-shadow", "0 2px 4px rgba(0,0,0,0.1)");
 
         // History header
         HorizontalLayout historyHeader = new HorizontalLayout();
@@ -514,17 +515,17 @@ public final class OrderingView extends Div {
         historyHeader.setAlignItems(FlexComponent.Alignment.CENTER);
         historyHeader.setJustifyContentMode(FlexComponent.JustifyContentMode.START);
         historyHeader.getStyle()
-                .set("border-radius", "8px")
-                .set("padding", "8px 12px")
-                .set("margin-bottom", "16px");
+            .set("border-radius", "8px")
+            .set("padding", "8px 12px")
+            .set("margin-bottom", "16px");
 
         Icon historyIcon = new Icon(VaadinIcon.CLOCK);
         historyIcon.setColor("#7c3aed");
         Span historyText = new Span("History");
         historyText.getStyle()
-                .set("color", "#7c3aed")
-                .set("font-weight", "600")
-                .set("font-size", "14px");
+            .set("color", "#7c3aed")
+            .set("font-weight", "600")
+            .set("font-size", "14px");
 
         historyHeader.add(historyIcon, historyText);
 
@@ -628,10 +629,10 @@ public final class OrderingView extends Div {
     private String formatDateTime(LocalDateTime dateTime) {
         if (dateTime == null) return "";
         return dateTime.getDayOfMonth() + " April 2025\n" +
-                String.format("%02d:%02d %s",
-                        dateTime.getHour() > 12 ? dateTime.getHour() - 12 : dateTime.getHour(),
-                        dateTime.getMinute(),
-                        dateTime.getHour() >= 12 ? "PM" : "AM");
+            String.format("%02d:%02d %s",
+                dateTime.getHour() > 12 ? dateTime.getHour() - 12 : dateTime.getHour(),
+                dateTime.getMinute(),
+                dateTime.getHour() >= 12 ? "PM" : "AM");
     }
 
     private VerticalLayout createRightContent() {
@@ -639,8 +640,8 @@ public final class OrderingView extends Div {
         content.setPadding(true);
         content.setSpacing(true);
         content.getStyle()
-                .set("padding", "16px")
-                .set("margin-bottom", "16px");
+            .set("padding", "16px")
+            .set("margin-bottom", "16px");
 
         VerticalLayout goodSection = goodSection();
 
@@ -651,10 +652,10 @@ public final class OrderingView extends Div {
     private VerticalLayout goodSection() {
         VerticalLayout container = new VerticalLayout();
         container.getStyle()
-                .set("background-color", "#ffffff")
-                .set("border-radius", "12px")
-                .set("padding", "16px")
-                .set("box-shadow", "0 2px 4px rgba(0,0,0,0.1)");
+            .set("background-color", "#ffffff")
+            .set("border-radius", "12px")
+            .set("padding", "16px")
+            .set("box-shadow", "0 2px 4px rgba(0,0,0,0.1)");
 
 
         HorizontalLayout goodsHeader = createGoodsHeader();
@@ -682,7 +683,7 @@ public final class OrderingView extends Div {
         header.setAlignItems(FlexComponent.Alignment.CENTER);
         header.setJustifyContentMode(FlexComponent.JustifyContentMode.BETWEEN);
         header.getStyle()
-                .set("padding", "16px");
+            .set("padding", "16px");
 
         // Goods title with icon
         HorizontalLayout titleSection = new HorizontalLayout();
@@ -693,9 +694,9 @@ public final class OrderingView extends Div {
         goodsIcon.setColor("#7c3aed");
         Span goodsTitle = new Span("Assets");
         goodsTitle.getStyle()
-                .set("color", "#7c3aed")
-                .set("font-weight", "400")
-                .set("font-size", "16px");
+            .set("color", "#7c3aed")
+            .set("font-weight", "400")
+            .set("font-size", "16px");
 
         titleSection.add(goodsIcon, goodsTitle);
 
@@ -716,7 +717,7 @@ public final class OrderingView extends Div {
         nameSearch.addClassName("custom-textfield");
         nameSearch.setPrefixComponent(new Icon(VaadinIcon.SEARCH));
         nameSearch.getStyle()
-                .set("margin", "0");
+            .set("margin", "0");
 
         nameSearch.addValueChangeListener(e -> {
 //            refreshGridProduct(allProducts);
@@ -738,9 +739,9 @@ public final class OrderingView extends Div {
         filters.setSpacing(true);
         filters.setAlignItems(FlexComponent.Alignment.CENTER);
         filters.getStyle()
-                .set("flex-wrap", "wrap")
-                .set("gap", "8px")
-                .set("padding-top", "10px");
+            .set("flex-wrap", "wrap")
+            .set("gap", "8px")
+            .set("padding-top", "10px");
 
         Button allBtn = createCategoryButton("All", false);
         List<Category> listCategory = categoryController.getListCategory();
@@ -766,7 +767,7 @@ public final class OrderingView extends Div {
         Button btn = new Button();
         btn.setWidth("auto"); // Let buttons size based on content
         btn.getStyle()
-                .set("cursor", "pointer");
+            .set("cursor", "pointer");
 
         HorizontalLayout content = new HorizontalLayout();
         content.setAlignItems(FlexComponent.Alignment.CENTER);
@@ -775,29 +776,29 @@ public final class OrderingView extends Div {
 
         Span textSpan = new Span(text);
         textSpan.getStyle()
-                .set("font-size", "12px")
-                .set("white-space", "nowrap"); // Prevent text wrapping
+            .set("font-size", "12px")
+            .set("white-space", "nowrap"); // Prevent text wrapping
 
         content.add(textSpan);
         btn.getElement().appendChild(content.getElement());
 
         btn.getStyle()
-                .set("border", "1px solid #e9ecef")
-                .set("border-radius", "5px")
-                .set("padding", "0px 12px")
-                .set("font-size", "12px")
-                .set("min-height", "32px")
-                .set("margin", "0"); // Remove any default margins
+            .set("border", "1px solid #e9ecef")
+            .set("border-radius", "5px")
+            .set("padding", "0px 12px")
+            .set("font-size", "12px")
+            .set("min-height", "32px")
+            .set("margin", "0"); // Remove any default margins
 
         if (active) {
             btn.getStyle()
-                    .set("background-color", "#7c3aed")
-                    .set("color", "white")
-                    .set("border-color", "#7c3aed");
+                .set("background-color", "#7c3aed")
+                .set("color", "white")
+                .set("border-color", "#7c3aed");
         } else {
             btn.getStyle()
-                    .set("background-color", "white")
-                    .set("color", "#6c757d");
+                .set("background-color", "white")
+                .set("color", "#6c757d");
         }
 
         return btn;
@@ -808,9 +809,9 @@ public final class OrderingView extends Div {
         gridSection.setPadding(false);
         gridSection.setSpacing(true);
         gridSection.getStyle()
-                .set("overflow-y", "auto")  // Enable vertical scrolling
-                .set("max-height", "575px") // Set max height for scrollable area
-                .set("margin-bottom", "16px");
+            .set("overflow-y", "auto")  // Enable vertical scrolling
+            .set("max-height", "575px") // Set max height for scrollable area
+            .set("margin-bottom", "16px");
 
         refreshGridProduct(allProducts);
 
@@ -851,21 +852,21 @@ public final class OrderingView extends Div {
         section.setPadding(false);
         section.setSpacing(true);
         section.getStyle()
-                .set("padding", "10px")
-                .set("margin-bottom", "16px");
+            .set("padding", "10px")
+            .set("margin-bottom", "16px");
 
         H4 categoryTitle = new H4(categoryName);
         categoryTitle.getStyle()
-                .set("margin", "0 0 12px 0")
-                .set("font-size", "14px")
-                .set("color", "#374151");
+            .set("margin", "0 0 12px 0")
+            .set("font-size", "14px")
+            .set("color", "#374151");
 
         // Changed to vertical layout for stacked cards
         VerticalLayout productGrid = new VerticalLayout();
         productGrid.setPadding(false);
         productGrid.setSpacing(true);
         productGrid.getStyle()
-                .set("gap", "8px");
+            .set("gap", "8px");
 
         for (HorizontalLayout product : products) {
             productGrid.add(product);
@@ -883,44 +884,44 @@ public final class OrderingView extends Div {
         card.setWidthFull();
         card.setHeight("70px");
         card.getStyle()
-                .set("cursor", "pointer")
-                .set("border", "1px solid #e5e7eb")
-                .set("border-radius", "8px")
-                .set("background-color", "#ffffff")
-                .set("padding", "12px 16px")
-                .set("transition", "all 0.2s ease")
-                .set("position", "relative");
+            .set("cursor", "pointer")
+            .set("border", "1px solid #e5e7eb")
+            .set("border-radius", "8px")
+            .set("background-color", "#ffffff")
+            .set("padding", "12px 16px")
+            .set("transition", "all 0.2s ease")
+            .set("position", "relative");
 
         // Hover effect
         card.getElement().executeJs(
-                "this.addEventListener('mouseenter', () => {" +
-                        "  this.style.backgroundColor = '#f9fafb';" +
-                        "  this.style.borderColor = '#d1d5db';" +
-                        "  this.style.boxShadow = '0px 10px 10px -3px rgba(0,0,0,0.1)';" +
-                        "});" +
-                        "this.addEventListener('mouseleave', () => {" +
-                        "  this.style.backgroundColor = '#ffffff';" +
-                        "  this.style.borderColor = '#e5e7eb';" +
-                        "  this.style.boxShadow = 'none';" +
-                        "});"
+            "this.addEventListener('mouseenter', () => {" +
+                "  this.style.backgroundColor = '#f9fafb';" +
+                "  this.style.borderColor = '#d1d5db';" +
+                "  this.style.boxShadow = '0px 10px 10px -3px rgba(0,0,0,0.1)';" +
+                "});" +
+                "this.addEventListener('mouseleave', () => {" +
+                "  this.style.backgroundColor = '#ffffff';" +
+                "  this.style.borderColor = '#e5e7eb';" +
+                "  this.style.boxShadow = 'none';" +
+                "});"
         );
 
         // Product icon (left side)
         Div iconContainer = new Div();
         iconContainer.getStyle()
-                .set("width", "40px")
-                .set("height", "40px")
-                .set("background-color", "#f3f4f6")
-                .set("border-radius", "6px")
-                .set("display", "flex")
-                .set("align-items", "center")
-                .set("justify-content", "center")
-                .set("flex-shrink", "0");
+            .set("width", "40px")
+            .set("height", "40px")
+            .set("background-color", "#f3f4f6")
+            .set("border-radius", "6px")
+            .set("display", "flex")
+            .set("align-items", "center")
+            .set("justify-content", "center")
+            .set("flex-shrink", "0");
 
         // Icon based on category (you can customize this)
         Span icon = new Span();
         icon.getStyle()
-                .set("font-size", "20px");
+            .set("font-size", "20px");
 
         // Simple icon mapping based on category
         if (category.toLowerCase().contains("audio") || category.toLowerCase().contains("speaker")) {
@@ -941,17 +942,17 @@ public final class OrderingView extends Div {
         infoSection.setSpacing(false);
         infoSection.setWidthFull();
         infoSection.getStyle()
-                .set("margin-left", "12px")
-                .set("flex-grow", "1");
+            .set("margin-left", "12px")
+            .set("flex-grow", "1");
 
         // Product name
         Span nameSpan = new Span(name);
         nameSpan.getStyle()
-                .set("font-weight", "600")
-                .set("font-size", "14px")
-                .set("color", "#111827")
-                .set("line-height", "1.2")
-                .set("margin-bottom", "2px");
+            .set("font-weight", "600")
+            .set("font-size", "14px")
+            .set("color", "#111827")
+            .set("line-height", "1.2")
+            .set("margin-bottom", "2px");
 
         // Category and status
         HorizontalLayout metaInfo = new HorizontalLayout();
@@ -962,25 +963,25 @@ public final class OrderingView extends Div {
 
         Span categorySpan = new Span(category);
         categorySpan.getStyle()
-                .set("font-size", "12px")
-                .set("color", "#6b7280");
+            .set("font-size", "12px")
+            .set("color", "#6b7280");
 
         // Status badge
         Span statusBadge = new Span(status);
         if (status.equals("Ready")) {
             statusBadge.getStyle()
-                    .set("background-color", "#dbeafe")
-                    .set("color", "#1e40af");
+                .set("background-color", "#dbeafe")
+                .set("color", "#1e40af");
         } else {
             statusBadge.getStyle()
-                    .set("background-color", "#fee2e2")
-                    .set("color", "#dc2626");
+                .set("background-color", "#fee2e2")
+                .set("color", "#dc2626");
         }
         statusBadge.getStyle()
-                .set("padding", "2px 6px")
-                .set("font-size", "10px")
-                .set("border-radius", "4px")
-                .set("font-weight", "500");
+            .set("padding", "2px 6px")
+            .set("font-size", "10px")
+            .set("border-radius", "4px")
+            .set("font-weight", "500");
 
         metaInfo.add(categorySpan, statusBadge);
         infoSection.add(nameSpan, metaInfo);
@@ -991,12 +992,12 @@ public final class OrderingView extends Div {
         qtySection.setAlignItems(FlexComponent.Alignment.CENTER);
         qtySection.setSpacing(true);
         qtySection.getStyle()
-                .set("margin-right", "12px");
+            .set("margin-right", "12px");
 
         Span qtyLabel = new Span("Qty");
         qtyLabel.getStyle()
-                .set("font-size", "12px")
-                .set("color", "#6b7280");
+            .set("font-size", "12px")
+            .set("color", "#6b7280");
 
         IntegerField qtyCombo = new IntegerField();
         qtyCombo.setStepButtonsVisible(true);
@@ -1004,7 +1005,7 @@ public final class OrderingView extends Div {
         qtyCombo.setMin(1);
         qtyCombo.setWidth("100px");
         qtyCombo.getElement().executeJs(
-                "this.addEventListener('click', function(e) { e.stopPropagation(); });"
+            "this.addEventListener('click', function(e) { e.stopPropagation(); });"
         );
 
         qtySection.add(qtyLabel, qtyCombo);
@@ -1012,25 +1013,25 @@ public final class OrderingView extends Div {
         // Checkbox (right side)
         Checkbox checkbox = new Checkbox();
         checkbox.getStyle()
-                .set("margin-left", "auto")
-                .set("flex-shrink", "0");
+            .set("margin-left", "auto")
+            .set("flex-shrink", "0");
 
         // Highlight card when checked
         checkbox.addValueChangeListener(event -> {
             if (event.getValue()) {
                 card.getStyle()
-                        .set("border-color", "#8b5cf6")
-                        .set("background-color", "#faf5ff");
+                    .set("border-color", "#8b5cf6")
+                    .set("background-color", "#faf5ff");
             } else {
                 card.getStyle()
-                        .set("border-color", "#e5e7eb")
-                        .set("background-color", "#ffffff");
+                    .set("border-color", "#e5e7eb")
+                    .set("background-color", "#ffffff");
             }
             qtySection.setVisible(event.getValue());
         });
 
         checkbox.getElement().executeJs(
-                "this.addEventListener('click', function(e) { e.stopPropagation(); });"
+            "this.addEventListener('click', function(e) { e.stopPropagation(); });"
         );
 
         // Add all components to card
@@ -1053,22 +1054,42 @@ public final class OrderingView extends Div {
         bottom.setAlignItems(FlexComponent.Alignment.CENTER);
         bottom.getStyle().set("margin-top", "20px");
 
+        // Pin input field
         pinCodeField = new PinCodeField(4);
+        pinCodeField.addClassName("pin-code-field");
 
-        // Submit button
-        Button btnDialog = new Button("Submit");
-
+        // === Dialog setup ===
         Dialog pinDialog = new Dialog();
         pinDialog.setHeaderTitle("Buat Pin Keamananmu");
-        VerticalLayout pinDialogLayout = createPinDialogLayout();
+        pinDialog.setCloseOnEsc(false);
+        pinDialog.setCloseOnOutsideClick(false);
 
-        pinDialog.add(pinDialogLayout);
+        // Close button (X)
+        Button closeButton = new Button("×", e -> pinDialog.close());
+        closeButton.getStyle()
+            .set("background", "none")
+            .set("border", "none")
+            .set("font-size", "24px")
+            .set("color", "#9CA3AF")
+            .set("cursor", "pointer")
+            .set("padding", "0")
+            .set("width", "30px")
+            .set("height", "30px");
+        pinDialog.getHeader().add(closeButton);
 
-        Button submitBtnForm = new Button("Submit");
-        submitBtnForm.addClickListener(event -> {
+        // Subtitle
+        Paragraph subtitle = new Paragraph(
+            "Agar proses permintaan barang lebih aman, silakan buat PIN unik yang hanya kamu yang tahu."
+        );
+        subtitle.addClassName("subtitle-pin");
+
+        // === Submit button inside dialog ===
+        Button confirmBtn = new Button("Submit", e -> {
             if (pinCodeField.isEmpty()) {
                 return;
             }
+
+            // Ambil produk terpilih
             Products[] productArray = selectedProducts.stream()
                 .filter(SelectedProduct::isSelected)
                 .map(selected -> {
@@ -1078,160 +1099,74 @@ public final class OrderingView extends Div {
                 })
                 .toArray(Products[]::new);
 
-            for (Products selectedProduct : productArray) {
-                System.out.println("Produk " + selectedProduct.getProductName() + " dipilih.");
-            }
+//            for (Products selectedProduct : productArray) {
+//                System.out.println("Produk " + selectedProduct.getProductName() + " dipilih.");
+//            }
+
             System.out.println(nameField.getValue());
+
+            // Ambil tanggal
+            String start = startDateInput.getAttribute("value");
+            String end = endDateInput.getAttribute("value");
+
+            if (start == null || end == null || start.isEmpty() || end.isEmpty()) {
+                System.out.println("Tanggal kosong");
+                return;
+            }
+
+            LocalDateTime ldtStart = LocalDateTime.parse(start, DateTimeFormatter.ISO_LOCAL_DATE_TIME);
+            LocalDateTime ldtEnd = LocalDateTime.parse(end, DateTimeFormatter.ISO_LOCAL_DATE_TIME);
+            System.out.println(ldtStart);
+
             Asset submitedAsset = new Asset(
-                "0", startDateField.getValue(), endDateField.getValue(), "",
-                pinCodeField.getValue(), noteField.getValue(), selectedLocation, productArray, statusCombo.getValue(), nameField.getValue(), classCombo.getValue()
+                "0", ldtStart, ldtEnd, "",
+                pinCodeField.getValue(), noteField.getValue(), selectedLocation,
+                productArray, statusCombo.getValue(), nameField.getValue(), classCombo.getValue()
             );
 
             var result = assetController.InsertAsset(submitedAsset);
+            System.out.println(result);
 
             if (result) {
                 pinDialog.close();
                 emptyForm();
             }
-
         });
-        submitBtnForm.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
-        submitBtnForm.setWidthFull();
-        submitBtnForm.getStyle()
+        confirmBtn.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+        confirmBtn.setWidthFull();
+        confirmBtn.getStyle()
             .set("background-color", "#7c3aed")
             .set("border-radius", "8px")
             .set("padding", "10px 24px");
-        submitBtnForm.addClickListener(event -> {
-        });
-        // Create PIN dialog with custom styling
-        Dialog pinDialog = new Dialog();
-        pinDialog.setCloseOnEsc(false);
-        pinDialog.setCloseOnOutsideClick(false);
 
-        // Header with close button
-        HorizontalLayout header = new HorizontalLayout();
-        header.setWidthFull();
-        header.setJustifyContentMode(FlexComponent.JustifyContentMode.BETWEEN);
-        header.setAlignItems(FlexComponent.Alignment.CENTER);
-
-        // Close button (X)
-        Button closeButton = new Button("×");
-        closeButton.getStyle()
-                .set("background", "none")
-                .set("border", "none")
-                .set("font-size", "24px")
-                .set("color", "#9CA3AF")
-                .set("cursor", "pointer")
-                .set("padding", "0")
-                .set("width", "30px")
-                .set("height", "30px");
-        closeButton.addClickListener(e -> pinDialog.close());
-
-        header.add(new Span(), closeButton); // Empty span for spacing
-
-        // Title and subtitle
-        H3 title = new H3("Buat PIN Keamananmu");
-        title.getStyle()
-                .set("margin", "0")
-                .set("font-size", "20px")
-                .set("font-weight", "600")
-                .set("color", "#1F2937")
-                .set("text-align", "center");
-
-        Paragraph subtitle = new Paragraph("Agar proses permintaan barang lebih aman, silakan buat PIN unik yang hanya kamu yang tahu.");
-        subtitle.addClassName("subtitle-pin");
-
-        // PIN input field
-        PinCodeField pinCodeField = new PinCodeField(4);
-        pinCodeField.addClassName("pin-code-field");
-
-        // Button layout
-        HorizontalLayout buttonLayout = new HorizontalLayout();
-        buttonLayout.setWidthFull();
-        buttonLayout.setSpacing(true);
-        buttonLayout.setJustifyContentMode(FlexComponent.JustifyContentMode.CENTER);
-
-        // Cancel button
-        Button cancelButton = new Button("Cancel");
-        cancelButton.addClassName("cancel-btn");
-        cancelButton.addClickListener(e -> pinDialog.close());
-
-        // Save button
-        Button saveButton = new Button("Save");
-        saveButton.addClassName("save-btn");
-        saveButton.addClickListener(e -> {
-            String pin = pinCodeField.getValue();
-            if (pin.length() == 4) {
-                processOrderSubmission();
-                pinDialog.close();
-                Notification.show("PIN berhasil disimpan!");
-            } else {
-                Notification.show("Mohon masukkan PIN 4 digit yang valid", 3000, Notification.Position.MIDDLE);
-            }
-        });
-
-        buttonLayout.add(cancelButton, saveButton);
-
-        // Dialog layout
-        VerticalLayout dialogLayout = new VerticalLayout();
+        // Layout dalam dialog
+        VerticalLayout dialogLayout = new VerticalLayout(subtitle, pinCodeField);
         dialogLayout.setPadding(true);
         dialogLayout.setSpacing(false);
         dialogLayout.setAlignItems(FlexComponent.Alignment.CENTER);
         dialogLayout.getStyle()
-                .set("padding", "14px")
-                .set("background-color", "white");
+            .set("padding", "14px")
+            .set("background-color", "white");
 
-        dialogLayout.add(header, title, subtitle, pinCodeField, buttonLayout);
         pinDialog.add(dialogLayout);
+        pinDialog.getFooter().add(confirmBtn);
 
-        // Submit button
-        Button submitBtn = new Button("Submit");
-        submitBtn.addClickListener(event -> {
-            pinDialog.open();
-            // Delay focus to ensure dialog is fully rendered
-            UI.getCurrent().access(() -> {
-                getUI().ifPresent(ui -> ui.getPage().executeJs(
-                        "setTimeout(() => { $0.focusFirstField(); }, 100);", pinCodeField
-                ));
-            });
-        });
-
-        submitBtn.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
-        submitBtn.getStyle()
-                .set("background-color", "#7c3aed")
-                .set("border-radius", "8px")
-                .set("padding", "10px 24px");
-
-        pinDialog.getFooter().add(submitBtnForm);
-
-        btnDialog.addClickListener(event -> {
+        // === Tombol utama di bawah form ===
+        Button openDialogBtn = new Button("Submit", e -> {
             if (validateRequiredFields()) {
                 pinDialog.open();
+                // Fokus ke PIN field setelah dialog terbuka
+                UI.getCurrent().access(() -> pinCodeField.focus());
             }
         });
-        btnDialog.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
-        btnDialog.getStyle()
+        openDialogBtn.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+        openDialogBtn.getStyle()
             .set("background-color", "#7c3aed")
             .set("border-radius", "8px")
             .set("padding", "10px 24px");
 
-        bottom.add(btnDialog);
+        bottom.add(openDialogBtn);
         return bottom;
-    }
-
-    private VerticalLayout createPinDialogLayout() {
-        VerticalLayout mainLayout = new VerticalLayout();
-
-        mainLayout.add(new Span("Agar proses peminjaman barang lebih aman, silakan buat PIN unik yang hanya kamu yang tahu."));
-
-        HorizontalLayout pinLayout = new HorizontalLayout();
-        pinLayout.setWidthFull();
-        pinLayout.setAlignItems(FlexComponent.Alignment.CENTER);
-        pinLayout.setJustifyContentMode(FlexComponent.JustifyContentMode.CENTER);
-        pinLayout.add(pinCodeField);
-        mainLayout.add(pinLayout);
-
-        return mainLayout;
     }
 
     private boolean validateRequiredFields() {
@@ -1243,17 +1178,17 @@ public final class OrderingView extends Div {
             isValid = false;
         }
 
-        if (startDateField.isEmpty()) {
-            startDateField.setInvalid(true);
-            startDateField.setErrorMessage("Start date is required");
-            isValid = false;
-        }
-
-        if (endDateField.isEmpty()) {
-            endDateField.setInvalid(true);
-            endDateField.setErrorMessage("End date is required");
-            isValid = false;
-        }
+//        if (startDateField.isEmpty()) {
+//            startDateField.setInvalid(true);
+//            startDateField.setErrorMessage("Start date is required");
+//            isValid = false;
+//        }
+//
+//        if (endDateField.isEmpty()) {
+//            endDateField.setInvalid(true);
+//            endDateField.setErrorMessage("End date is required");
+//            isValid = false;
+//        }
 
         if (selectedLocation == null) {
             // Assuming there's a way to flag the location field as invalid
@@ -1279,8 +1214,8 @@ public final class OrderingView extends Div {
 
     public void emptyForm() {
         nameField.clear();
-        startDateField.clear();
-        endDateField.clear();
+        startDateInput.setAttribute("value", LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
+        endDateInput.setAttribute("value", LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
         selectedLocation = null;
         statusCombo.clear();
         classCombo.clear();
@@ -1288,21 +1223,30 @@ public final class OrderingView extends Div {
         noteField.clear();
 
         selectedProducts.clear();
+    }
 
     private void processOrderSubmission() {
         Products[] productArray = selectedProducts.stream()
-                .filter(SelectedProduct::isSelected)
-                .map(selected -> {
-                    Products p = selected.getProduct();
-                    p.setQuantity(selected.getQty());
-                    return p;
-                })
-                .toArray(Products[]::new);
+            .filter(SelectedProduct::isSelected)
+            .map(selected -> {
+                Products p = selected.getProduct();
+                p.setQuantity(selected.getQty());
+                return p;
+            })
+            .toArray(Products[]::new);
+
+
+        String start = startDateInput.getAttribute("value");
+        String end = endDateInput.getAttribute("value");
+
+        LocalDateTime ldtStart = LocalDateTime.parse(start, DateTimeFormatter.ISO_LOCAL_DATE_TIME);
+        LocalDateTime ldtEnd = LocalDateTime.parse(end, DateTimeFormatter.ISO_LOCAL_DATE_TIME);
+
 
         Asset submitedAsset = new Asset(
-                "0", startDateField.getValue(), endDateField.getValue(), "",
-                "0", noteField.getValue(), selectedLocation, productArray,
-                statusCombo.getValue(), nameField.getValue(), classCombo.getValue()
+            "0", ldtStart, ldtEnd, "",
+            "0", noteField.getValue(), selectedLocation, productArray,
+            statusCombo.getValue(), nameField.getValue(), classCombo.getValue()
         );
 
         assetController.InsertAsset(submitedAsset);
@@ -1354,108 +1298,108 @@ public final class OrderingView extends Div {
         Button closeButton = new Button("x");
         closeButton.addClickListener(e -> helpDialog.close());
         closeButton.getStyle()
-                .set("position", "absolute")
-                .set("top", "12px")
-                .set("right", "12px")
-                .set("background", "none")
-                .set("font-size", "24px")
-                .set("color", "#666")
-                .set("cursor", "pointer")
-                .set("z-index", "1000");
+            .set("position", "absolute")
+            .set("top", "12px")
+            .set("right", "12px")
+            .set("background", "none")
+            .set("font-size", "24px")
+            .set("color", "#666")
+            .set("cursor", "pointer")
+            .set("z-index", "1000");
 
         // Icon container
         Div iconContainer = new Div();
         iconContainer.getStyle()
-                .set("text-align", "center")
-                .set("margin-bottom", "20px");
+            .set("text-align", "center")
+            .set("margin-bottom", "20px");
 
         Span headsetIcon = new Span(new Icon(VaadinIcon.HEADSET));
         headsetIcon.getStyle()
-                .set("font-size", "48px")
-                .set("display", "block")
-                .set("margin-bottom", "16px");
+            .set("font-size", "48px")
+            .set("display", "block")
+            .set("margin-bottom", "16px");
 
         iconContainer.add(headsetIcon);
 
         // Header
         H2 header = new H2("Butuh Bantuan? Hubungi Admin Layanan");
         header.getStyle()
-                .set("margin", "0 0 16px 0")
-                .set("color", "#333")
-                .set("font-size", "1.25rem")
-                .set("font-weight", "600")
-                .set("text-align", "center")
-                .set("line-height", "1.4");
+            .set("margin", "0 0 16px 0")
+            .set("color", "#333")
+            .set("font-size", "1.25rem")
+            .set("font-weight", "600")
+            .set("text-align", "center")
+            .set("line-height", "1.4");
 
         // Content
         Paragraph content = new Paragraph(
-                "Jika Anda mengalami kendala atau memiliki pertanyaan " +
-                        "seputar peminjaman barang, silakan hubungi admin melalui " +
-                        "telepon atau email yang tersedia.");
+            "Jika Anda mengalami kendala atau memiliki pertanyaan " +
+                "seputar peminjaman barang, silakan hubungi admin melalui " +
+                "telepon atau email yang tersedia.");
         content.getStyle()
-                .set("margin", "0 0 12px 0")
-                .set("color", "#666")
-                .set("font-size", "0.9rem")
-                .set("line-height", "1.5")
-                .set("text-align", "center");
+            .set("margin", "0 0 12px 0")
+            .set("color", "#666")
+            .set("font-size", "0.9rem")
+            .set("line-height", "1.5")
+            .set("text-align", "center");
 
         // Contact info container
         Div contactContainer = new Div();
         contactContainer.getStyle()
-                .set("text-align", "center")
-                .set("margin-top", "10px");
+            .set("text-align", "center")
+            .set("margin-top", "10px");
 
         // Phone number
         Div phone = new Div(new Text("(+82) 88972349289847"));
         phone.getStyle()
-                .set("margin", "8px 0")
-                .set("font-weight", "500")
-                .set("font-size", "1rem")
-                .set("color", "#333");
+            .set("margin", "8px 0")
+            .set("font-weight", "500")
+            .set("font-size", "1rem")
+            .set("color", "#333");
 
         // Email
         Div email = new Div(new Text("24assets@gmail.com"));
         email.getStyle()
-                .set("margin", "8px 0")
-                .set("font-weight", "400")
-                .set("font-size", "0.9rem")
-                .set("color", "#888");
+            .set("margin", "8px 0")
+            .set("font-weight", "400")
+            .set("font-size", "0.9rem")
+            .set("color", "#888");
 
         contactContainer.add(phone, email);
 
         // Main container with relative positioning for close button
         Div mainContainer = new Div();
         mainContainer.getStyle()
-                .set("position", "relative")
-                .set("width", "100%");
+            .set("position", "relative")
+            .set("width", "100%");
 
         mainContainer.add(closeButton);
 
         // Layout
         VerticalLayout dialogLayout = new VerticalLayout(
-                iconContainer,
-                header,
-                content,
-                contactContainer
+            iconContainer,
+            header,
+            content,
+            contactContainer
         );
 
         dialogLayout.setPadding(false);
         dialogLayout.setSpacing(false);
         dialogLayout.setAlignItems(FlexComponent.Alignment.CENTER);
         dialogLayout.getStyle()
-                .set("max-width", "500px")
-                .set("width", "100%")
-                .set("padding", "22px 24px")
-                .set("font-family", "'Poppins', sans-serif")
-                .set("background", "white")
-                .set("border-radius", "15px");
+            .set("max-width", "500px")
+            .set("width", "100%")
+            .set("padding", "22px 24px")
+            .set("font-family", "'Poppins', sans-serif")
+            .set("background", "white")
+            .set("border-radius", "15px");
 
         mainContainer.add(dialogLayout);
         helpDialog.add(mainContainer);
 
         // Optional: Add overlay styling
         helpDialog.getElement().getStyle()
-                .set("--lumo-surface-color", "white");
+            .set("--lumo-surface-color", "white");
     }
 
     public static void showMainView() {

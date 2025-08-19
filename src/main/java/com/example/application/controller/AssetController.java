@@ -4,11 +4,7 @@ import com.example.application.model.Asset;
 import com.example.application.model.Location;
 import com.example.application.model.Products;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Date;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -72,8 +68,8 @@ public class AssetController {
                 try (PreparedStatement ps = conn.prepareStatement(query)) {
                     ps.setInt(1, assets.getProducts()[i].getProductID());
                     ps.setInt(2, assets.getLocation().getLocationID());
-                    ps.setDate(3, Date.valueOf(assets.getTakeTime().toLocalDate()));
-                    ps.setDate(4, Date.valueOf(assets.getReturnTime().toLocalDate()));
+                    ps.setTimestamp(3, Timestamp.valueOf(assets.getTakeTime()));
+                    ps.setTimestamp(4, Timestamp.valueOf(assets.getReturnTime()));
                     ps.setString(5, assets.getPin());
                     ps.setString(6, assets.getNote());
                     ps.setString(7, assets.getRole());
